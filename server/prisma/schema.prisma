@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  contact   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  transactions Transaction[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  items Item[]
+}
+
+model Item {
+  id        String   @id @default(cuid())
+  name      String
+  weight    Float
+  categoryId String
+  category Category @relation(fields: [categoryId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  client Client @relation(fields: [clientId], references: [id])
+  clientId  String
+  item Item @relation(fields: [itemId], references: [id])
+  itemId    String
+  weight    Float
+  price     Float
+  total     Float
+  paymentType PaymentType
+  status    Status
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  
+  payments Payment[]
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+  transactionId String
+  date      DateTime
+  amountPaid Float
+  balance   Float
+  paymentMode PaymentMode
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+enum PaymentType {
+  LAYAWAY
+  ONE_TIME
+}
+
+
+enum PaymentMode {
+  GCASH
+  BPI
+  BDO
+  CASH
+  PAYMAYA
+}
+
+enum Status {
+  PENDING
+  COMPLETED
+  CANCELLED
+}

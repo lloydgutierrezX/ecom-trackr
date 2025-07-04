@@ -1,0 +1,68 @@
+POST http://localhost:3001/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "P@ssword123"
+}
+
+### Register User
+POST http://localhost:3001/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "P@ssword123",
+  "name": "Admin User"
+}
+
+### Test Authenticated Route
+GET http://localhost:3001/api/auth/1111
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWNvc2VxN3AwMDAwYW83cXlqN3RxdWV0IiwiaWF0IjoxNzUxNjQwNzg3LCJleHAiOjE3NTE3MjcxODd9.zg3tD0FyyShoeDn32joLUWqPFS4E8PbnhQm4ibq1SD4
+
+
+
+### Get All
+GET http://localhost:3001/api/payments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWNvc2VxN3AwMDAwYW83cXlqN3RxdWV0IiwiaWF0IjoxNzUxNjQwNzg3LCJleHAiOjE3NTE3MjcxODd9.zg3tD0FyyShoeDn32joLUWqPFS4E8PbnhQm4ibq1SD4
+
+### Get By ID
+GET http://localhost:3001/api/payments/cmcpar5a20001aonths8lcne3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWNvc2VxN3AwMDAwYW83cXlqN3RxdWV0IiwiaWF0IjoxNzUxNjQwNzg3LCJleHAiOjE3NTE3MjcxODd9.zg3tD0FyyShoeDn32joLUWqPFS4E8PbnhQm4ibq1SD4
+
+### Create
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWNvc2VxN3AwMDAwYW83cXlqN3RxdWV0IiwiaWF0IjoxNzUxNjQwNzg3LCJleHAiOjE3NTE3MjcxODd9.zg3tD0FyyShoeDn32joLUWqPFS4E8PbnhQm4ibq1SD4
+
+{
+  "transactionId": "cmcpao9s00001aoltgzmrlak1",
+  "date": "2025-07-05T14:30:00.000Z",
+  "amountPaid": 5000,
+  "balance": 1500,
+  "paymentMode": "GCASH"
+}
+
+### Update
+PUT http://localhost:3001/api/payments/cmcpar5a20001aonths8lcne3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWNvc2VxN3AwMDAwYW83cXlqN3RxdWV0IiwiaWF0IjoxNzUxNjQwNzg3LCJleHAiOjE3NTE3MjcxODd9.zg3tD0FyyShoeDn32joLUWqPFS4E8PbnhQm4ibq1SD4
+
+{
+  "transactionId": "cmcpao9s00001aoltgzmrlak1",
+  "date": "2025-07-06T10:00:00.000Z",
+  "amountPaid": 6000,
+  "balance": 1000,
+  "paymentMode": "BDO"
+}
+
+
+### Soft Delete
+DELETE http://localhost:3001/api/payments/cmcpar5a20001aonths8lcne3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWNvc2VxN3AwMDAwYW83cXlqN3RxdWV0IiwiaWF0IjoxNzUxNjQwNzg3LCJleHAiOjE3NTE3MjcxODd9.zg3tD0FyyShoeDn32joLUWqPFS4E8PbnhQm4ibq1SD4
+
+
