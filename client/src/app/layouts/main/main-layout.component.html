@@ -1,0 +1,6 @@
+<main>
+    <app-navbar (toggle)="toggleDrawer()" />
+    <app-drawer [open]="isDrawerOpen" (drawerStateChanged)="onDrawerStateChanged($event)" />
+
+    <router-outlet></router-outlet>
+</main>
