@@ -1,0 +1,41 @@
+<ng-template #renderMenuItem let-item>
+    <li>
+        <a
+            [routerLink]="[item.route]"
+            [class.bg-base-300]="router.url === item.route"
+            [class.border-primary]="router.url === item.route"
+            [class.active]="router.url === item.route"
+            class="rounded-none"
+        >
+            <app-icons [name]="item.icon" />
+            {{ item.label }}
+        </a>
+    </li>
+</ng-template>
+
+<ul role="Sidebar menu" class="menu bg-base-200 w-56 h-screen p-0">
+    @for (menu of menus; track menu.route; let i = $index) {
+        @if (menu.children) {
+            <li>
+                <details>
+                    <summary class="rounded-none" aria-expanded="true">
+                        <app-icons [name]="menu.icon" />
+                        {{ menu.label }}
+                    </summary>
+                    <ul
+                        role="Sidebar submenu"
+                        class="before:hidden m-0 p-0 transition-all duration-300 ease-in-out overflow-hidden"
+                    >
+                        @for (child of menu.children; track child.route) {
+                            <ng-container
+                                *ngTemplateOutlet="renderMenuItem; context: { $implicit: child }"
+                            />
+                        }
+                    </ul>
+                </details>
+            </li>
+        } @else {
+            <ng-container *ngTemplateOutlet="renderMenuItem; context: { $implicit: menu }" />
+        }
+    }
+</ul>
