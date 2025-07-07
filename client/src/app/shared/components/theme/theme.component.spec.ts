@@ -6,6 +6,8 @@ describe('ThemeComponent', () => {
   let component: ThemeComponent;
   let fixture: ComponentFixture<ThemeComponent>;
 
+  localStorage.setItem('theme', 'dim');
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ThemeComponent]
@@ -40,6 +42,13 @@ describe('ThemeComponent', () => {
     component.theme = 'cupcake';
     component.toggleTheme();
     expect(localStorage.getItem('theme')).toBe('dim');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dim');
+  });
+
+  it('should load and apply the theme from localStorage on init', () => {
+    fixture.detectChanges();
+
+    expect(component.theme).toBe('dim');
     expect(document.documentElement.getAttribute('data-theme')).toBe('dim');
   });
 });
