@@ -1,9 +1,12 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild, OnChanges } from '@angular/core';
-
+import { IconsComponent } from '../icons/icons.component';
+import { MenuComponent } from '../menu/menu.component';
+import { MENU_ITEMS } from './menu';
+import { IMenu } from '../../interface/menu.interface';
 @Component({
   selector: 'app-drawer',
   standalone: true,
-  imports: [],
+  imports: [MenuComponent],
   templateUrl: './drawer.component.html'
 })
 export class DrawerComponent implements AfterViewInit, OnChanges {
@@ -11,6 +14,8 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
   @Output() drawerStateChanged = new EventEmitter<boolean>();
 
   @ViewChild('drawerToggle') drawerToggle!: ElementRef<HTMLInputElement>;
+
+  MENU_ITEMS_LIST: IMenu[] = MENU_ITEMS;
 
   ngAfterViewInit() {
     this.syncDrawerState();
