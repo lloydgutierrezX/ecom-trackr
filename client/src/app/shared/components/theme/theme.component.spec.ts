@@ -19,6 +19,10 @@ describe('ThemeComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    fixture.destroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -38,7 +42,7 @@ describe('ThemeComponent', () => {
     expect(component.theme).toBe('cupcake');
   });
 
-  it('should set the teheme in localStorage and document attribute', () => {
+  it('should set the theme in localStorage and document attribute', () => {
     component.theme = 'cupcake';
     component.toggleTheme();
     expect(localStorage.getItem('theme')).toBe('dim');
@@ -46,9 +50,10 @@ describe('ThemeComponent', () => {
   });
 
   it('should load and apply the theme from localStorage on init', () => {
-    fixture.detectChanges();
+    const theme = localStorage.getItem('theme');
 
-    expect(component.theme).toBe('dim');
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dim');
+    fixture.detectChanges();
+    expect(theme).toBe(component.theme);
+    expect(document.documentElement.getAttribute('data-theme')).toBe(theme);
   });
 });

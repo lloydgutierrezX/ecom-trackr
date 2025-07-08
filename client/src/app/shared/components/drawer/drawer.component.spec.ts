@@ -1,19 +1,26 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DrawerComponent } from './drawer.component';
 import { By } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+
+@Component({ template: '' })
+class DummyComponent { }
 
 describe('DrawerComponent', () => {
+
   let component: DrawerComponent;
   let fixture: ComponentFixture<DrawerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DrawerComponent],
-      providers: [provideRouter([])]
-    })
-      .compileComponents();
+      providers: [
+        provideRouter([{ path: '', component: DummyComponent }]),
+        { provide: ActivatedRoute, useValue: {} }
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DrawerComponent);
     component = fixture.componentInstance;
@@ -39,5 +46,23 @@ describe('DrawerComponent', () => {
     input.dispatchEvent(new Event('change'));
     fixture.detectChanges();
     expect(component.drawerStateChanged.emit).toHaveBeenCalledWith(true);
+  });
+
+  it('should close drawer and emit event on NavigationEnd', async () => {
+    const router = TestBed.inject(Router);
+
+    component.drawerToggle.nativeElement = document.createElement('input');
+    component.drawerToggle.nativeElement.checked = true;
+
+    const spy = spyOn(component, 'onDrawerChange');
+
+    component.ngAfterViewInit();
+
+    await router.navigateByUrl('/');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(component.drawerToggle.nativeElement.checked).toBeFalse();
+    expect(spy).toHaveBeenCalled();
   });
 });

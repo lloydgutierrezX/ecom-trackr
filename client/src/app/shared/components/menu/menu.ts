@@ -21,17 +21,17 @@ export const MENU_ITEMS = [
       {
         label: 'Categories',
         icon: 'blocks',
-        route: '/categories'
+        route: 'management/categories'
       },
       {
         label: 'Client',
         icon: 'user-cog',
-        route: '/clients'
+        route: 'management/clients'
       },
       {
         label: 'Items',
         icon: 'box',
-        route: '/items'
+        route: 'management/items'
       }
     ]
   }
