@@ -1,14 +1,15 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild, OnChanges } from '@angular/core';
-import { IconsComponent } from '../icons/icons.component';
 import { MenuComponent } from '../menu/menu.component';
 import { MENU_ITEMS } from '../menu/menu';
 import { IMenu } from '../../interface/menu.interface';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
+import { UserProfileComponent } from "../user-profile.component";
+import { IconsComponent } from '../icons/icons.component';
 @Component({
   selector: 'app-drawer',
   standalone: true,
-  imports: [MenuComponent],
+  imports: [MenuComponent, UserProfileComponent, IconsComponent],
   templateUrl: './drawer.component.html'
 })
 export class DrawerComponent implements AfterViewInit, OnChanges {
@@ -50,5 +51,9 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
   onDrawerChange() {
     const isChecked = this.drawerToggle.nativeElement.checked;
     this.drawerStateChanged.emit(isChecked);
+  }
+
+  signOut() {
+    console.log('log me out!');
   }
 }
