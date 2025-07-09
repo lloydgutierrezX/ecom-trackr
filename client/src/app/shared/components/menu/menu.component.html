@@ -2,16 +2,16 @@
     <li>
         <a
             [routerLink]="[item.route]"
-            routerLinkActive="bg-base-300 border-primary active"
-            class="rounded-none"
+            routerLinkActive="bg-base-300 active"
+            class="relative w-full px-4 py-2 rounded-none text-sm leading-tight flex items-center before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-transparent router-active-before:bg-primary"
         >
-            <app-icons [name]="item.icon" />
-            {{ item.label }}
+            <app-icons [name]="item.icon" class="w-5 h-5 shrink-0" />
+            <span class="ml-2 whitespace-nowrap">{{ item.label }}</span>
         </a>
     </li>
 </ng-template>
 
-<ul role="Sidebar menu w-56" class="menu p-0">
+<ul role="Sidebar menu" class="menu bg-base-200 w-56 h-screen p-0 pt-1">
     @for (menu of menus; track menu.route; let i = $index) {
         @if (menu.children) {
             <li>
