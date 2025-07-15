@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IconsComponent } from "./icons/icons.component";
+import { IconsComponent } from "./../icons/icons.component";
 
 @Component({
   selector: 'app-user-profile',
