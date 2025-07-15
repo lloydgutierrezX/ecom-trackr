@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild, OnChanges } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { MENU_ITEMS } from '../menu/menu';
-import { IMenu } from '../../interface/menu.interface';
+import { IMenu } from '../../interfaces/menu.interface';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
-import { UserProfileComponent } from "../user-profile.component";
+import { UserProfileComponent } from "../user-profile/user-profile.component";
 import { IconsComponent } from '../icons/icons.component';
 @Component({
   selector: 'app-drawer',

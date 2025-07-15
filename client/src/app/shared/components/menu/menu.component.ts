@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { IconsComponent } from '../icons/icons.component';
 import { Router, RouterModule } from '@angular/router';
-import { IMenu } from '../../interface/menu.interface';
+import { IMenu } from '../../interfaces/menu.interface';
 import { NgTemplateOutlet } from '@angular/common';
 
 @Component({

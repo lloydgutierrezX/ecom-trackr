@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { LucideAngularModule, BanknoteArrowDown, CircleGauge, HandCoins, Settings, Blocks, UserCog, Box, UserRound, LogOut } from 'lucide-angular';
+import { LucideAngularModule, BanknoteArrowDown, CircleGauge, HandCoins, Settings, Blocks, UserCog, Box, UserRound, LogOut, Edit, Trash2, Search } from 'lucide-angular';
 
 @Component({
   selector: 'app-icons',
@@ -8,7 +8,8 @@ import { LucideAngularModule, BanknoteArrowDown, CircleGauge, HandCoins, Setting
   templateUrl: './icons.component.html'
 })
 export class IconsComponent {
-  @Input() name = '';
+  @Input() name = "";
+  @Input() class? = "";
 
   readonly BanknoteArrowDown = BanknoteArrowDown;
   readonly CircleGauge = CircleGauge;
@@ -19,4 +20,7 @@ export class IconsComponent {
   readonly Box = Box;
   readonly UserRound = UserRound;
   readonly Logout = LogOut;
+  readonly Edit = Edit;
+  readonly Trash2 = Trash2;
+  readonly Search = Search;
 }
