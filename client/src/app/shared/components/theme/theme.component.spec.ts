@@ -6,7 +6,7 @@ describe('ThemeComponent', () => {
   let component: ThemeComponent;
   let fixture: ComponentFixture<ThemeComponent>;
 
-  localStorage.setItem('theme', 'dim');
+  localStorage.setItem('theme', 'dracula');
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -27,26 +27,26 @@ describe('ThemeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize theme from localStorage or default to cupcake', () => {
+  it('should initialize theme from localStorage or default to garden', () => {
     localStorage.removeItem('theme');
     const instance = new ThemeComponent();
-    expect(instance.theme).toBe('cupcake');
+    expect(instance.theme).toBe('garden');
   });
 
-  it('should toggle theme between cupcake and dim', () => {
-    component.theme = 'cupcake';
+  it('should toggle theme between garden and dracula', () => {
+    component.theme = 'garden';
     component.toggleTheme();
-    expect(component.theme).toBe('dim');
+    expect(component.theme).toBe('dracula');
 
     component.toggleTheme();
-    expect(component.theme).toBe('cupcake');
+    expect(component.theme).toBe('garden');
   });
 
   it('should set the theme in localStorage and document attribute', () => {
-    component.theme = 'cupcake';
+    component.theme = 'garden';
     component.toggleTheme();
-    expect(localStorage.getItem('theme')).toBe('dim');
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dim');
+    expect(localStorage.getItem('theme')).toBe('dracula');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dracula');
   });
 
   it('should load and apply the theme from localStorage on init', () => {

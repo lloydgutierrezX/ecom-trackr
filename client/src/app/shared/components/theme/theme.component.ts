@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LucideAngularModule, Moon, Sun } from 'lucide-angular';
 
-type ITheme = 'cupcake' | 'dim';
+type ITheme = 'garden' | 'dracula';
 
 @Component({
   selector: 'app-theme',
@@ -16,7 +16,7 @@ export class ThemeComponent implements OnInit {
 
   theme: ITheme = ((): ITheme => {
     const stored = localStorage.getItem('theme');
-    return stored === 'cupcake' || stored === 'dim' ? stored : 'cupcake';
+    return stored === 'garden' || stored === 'dracula' ? stored : 'garden';
   })();
 
   ngOnInit() {
@@ -24,7 +24,7 @@ export class ThemeComponent implements OnInit {
   }
 
   toggleTheme() {
-    this.theme = this.theme === 'cupcake' ? 'dim' : 'cupcake';
+    this.theme = this.theme === 'garden' ? 'dracula' : 'garden';
     this.setTheme(this.theme);
   }
 
