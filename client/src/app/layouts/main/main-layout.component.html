@@ -1,5 +1,18 @@
 <app-navbar (toggle)="toggleDrawer()" />
-<app-drawer [open]="isDrawerOpen" (drawerStateChanged)="onDrawerStateChanged($event)" />
-<main>
-    <router-outlet></router-outlet>
-</main>
+<div class="h-1 w-full">
+    @if (isLoading) {
+        <app-loader class="flex" />
+    }
+</div>
+<div class="flex">
+    <app-drawer
+        class="z-10"
+        [open]="isDrawerOpen"
+        (drawerStateChanged)="onDrawerStateChanged($event)"
+    />
+    <main class="flex-grow p-4">
+        <section class="max-w-screen-xl mx-auto">
+            <router-outlet></router-outlet>
+        </section>
+    </main>
+</div>
