@@ -1,0 +1,69 @@
+<div
+    class="my-4 overflow-x-auto rounded-xl border border-base-content/10 bg-base-100 shadow-lg shadow-base-content/10"
+>
+    <table class="table w-full">
+        <thead>
+            <tr>
+                @for (item of config.columns; track $index) {
+                    <th [style]="item.style" class="bg-base-200 text-base-content py-4">
+                        {{ item.label }}
+                    </th>
+                }
+                <th class="bg-base-200 text-base-content py-4 text-center w-[100px]">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (isLoading && rows && rows.length == 0) {
+                <tr>
+                    <th class="text-center" [attr.colSpan]="config.columns.length + 1">
+                        Loading row data...
+                    </th>
+                </tr>
+            } @else {
+                @for (row of rows; track $index) {
+                    <tr key="{$index}">
+                        @for (item of config.columns; track $index) {
+                            <td key="{$index}" class="text-base-content/80">
+                                {{ item.valueFn(row) }}
+                            </td>
+                        }
+
+                        <td class="text-center flex gap-1">
+                            @if (config.actions.update?.enabled) {
+                                <div
+                                    class="tooltip"
+                                    [attr.data-tip]="
+                                        config.actions.update?.tooltip || 'Update this item?'
+                                    "
+                                >
+                                    <button
+                                        class="btn btn-sm rounded-md hover:text-gray-600 hover:bg-green-300"
+                                        (click)="onEditRow(row)"
+                                    >
+                                        <app-icons [name]="'edit-2'" class="w-4 h-4" />
+                                    </button>
+                                </div>
+                            }
+
+                            @if (config.actions.delete?.enabled) {
+                                <div
+                                    class="tooltip"
+                                    [attr.data-tip]="
+                                        config.actions.delete?.tooltip || 'Delete this item?'
+                                    "
+                                >
+                                    <button
+                                        class="btn btn-sm rounded-md hover:text-gray-600 hover:bg-red-300"
+                                        (click)="onDeleteRow(row)"
+                                    >
+                                        <app-icons [name]="'trash-2'" class="w-4 h-4" />
+                                    </button>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
