@@ -5,7 +5,11 @@
         <thead>
             <tr>
                 @for (item of config.columns; track $index) {
-                    <th [style]="item.style" class="bg-base-200 text-base-content py-4">
+                    <th
+                        [style]="item.style"
+                        class="bg-base-200 text-base-content py-4"
+                        [attr.tooltip]="item.label"
+                    >
                         {{ item.label }}
                     </th>
                 }
@@ -13,22 +17,25 @@
             </tr>
         </thead>
         <tbody>
-            @if (isLoading && rows && rows.length == 0) {
+            @if (isLoading && filteredRows && filteredRows.length == 0) {
                 <tr>
                     <th class="text-center" [attr.colSpan]="config.columns.length + 1">
                         Loading row data...
                     </th>
                 </tr>
             } @else {
-                @for (row of rows; track $index) {
-                    <tr key="{$index}">
+                @for (row of pagedRows; track $index) {
+                    <tr [attr.key]="'table-row.' + $index">
                         @for (item of config.columns; track $index) {
-                            <td key="{$index}" class="text-base-content/80">
+                            <td [attr.key]="'table-data.' + $index" class="text-base-content/80">
                                 {{ item.valueFn(row) }}
                             </td>
                         }
 
-                        <td class="text-center flex gap-1">
+                        <td
+                            [attr.key]="'table-data-action.' + $index"
+                            class="text-center flex gap-1"
+                        >
                             @if (config.actions.update?.enabled) {
                                 <div
                                     class="tooltip"
@@ -40,7 +47,7 @@
                                         class="btn btn-sm rounded-md hover:text-gray-600 hover:bg-green-300"
                                         (click)="onEditRow(row)"
                                     >
-                                        <app-icons [name]="'edit-2'" class="w-4 h-4" />
+                                        <app-icons [name]="'edit'" class="w-4 h-4" />
                                     </button>
                                 </div>
                             }

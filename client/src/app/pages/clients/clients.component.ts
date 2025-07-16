@@ -6,21 +6,23 @@ import { IClient } from '../../core/services/client/client.model';
 import { ClientService } from '../../core/services/client/client.service';
 import { SearchComponent } from "../../shared/components/search/search.component";
 import { ListLayoutComponent } from '../../shared/components/list-layout/list-layout.component';
+import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 @Component({
   selector: 'app-clients',
   standalone: true,
-  imports: [TableComponent, SearchComponent, ListLayoutComponent],
+  imports: [TableComponent, SearchComponent, ListLayoutComponent, PaginationComponent],
   templateUrl: './clients.component.html'
 })
 export class ClientsComponent {
   tableConfig: ITableConfig<IClient>;
+  searchTerm = '';
 
   constructor(private clientSrvc: ClientService) {
     this.tableConfig = tableConfig(this.clientSrvc);
   }
 
   onSearch(query: string) {
-    console.log(query);
+    this.searchTerm = query;
   }
 
   onAdd() {

@@ -4,6 +4,8 @@ export interface ITableColumns<T = any> {
   label: string;
   valueFn: (row: T) => string | number | boolean;
   style: string;
+  key: string;
+  searchable: boolean;
 }
 
 interface ITableActionConfig<T = any> {
@@ -30,5 +32,5 @@ export interface ITableConfig<T = any> {
   id: string;
   columns: ITableColumns<T>[];
   actions: ITableActions<T>;
-  sortBy: ITableSortBy[]
+  sortBy: ITableSortBy[];
 }

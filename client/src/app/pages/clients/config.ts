@@ -8,18 +8,35 @@ export const tableConfig = (clientSrvc: ClientService): ITableConfig<IClient> =>
   columns: [
     {
       label: 'Name',
-      valueFn: (data: any) => data.name,
-      style: 'width: 40%'
+      type: 'string',
+      valueFn: (data: { name: string }) => data.name,
+      style: 'width: 30%',
+      key: 'name',
+      searchable: true
     },
     {
       label: 'Active',
+      type: 'boolean',
       valueFn: (data: { deletedAt: Date | null }) => data.deletedAt ? 'Not Active' : 'Active',
-      style: 'width: 30%'
+      style: 'width: 20%',
+      key: 'active',
+      searchable: false
+    },
+    {
+      label: 'Contact',
+      type: 'string',
+      valueFn: (data: any) => data.contact,
+      style: 'width: 20%',
+      key: 'contact',
+      searchable: true
     },
     {
       label: 'Date Created',
+      type: 'date',
       valueFn: (data: { createdAt: Date }) => format(new Date(data.createdAt), 'yyyy-MM-dd'),
-      style: 'width: 30%'
+      style: 'width: 20%',
+      key: 'createdAt',
+      searchable: true
     },
   ],
   actions: {

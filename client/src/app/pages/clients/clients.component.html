@@ -12,6 +12,15 @@
     </div>
 
     <div table>
-        <app-table [config]="tableConfig" (onEdit)="onEdit($event)" (onDelete)="onDelete($event)" />
+        <app-table
+            [config]="tableConfig"
+            [search]="searchTerm"
+            (onEdit)="onEdit($event)"
+            (onDelete)="onDelete($event)"
+        />
+    </div>
+
+    <div pagination>
+        <app-pagination />
     </div>
 </app-list-layout>
