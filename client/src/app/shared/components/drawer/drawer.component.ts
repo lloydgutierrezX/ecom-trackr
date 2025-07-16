@@ -29,7 +29,6 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
     this.routerSub = this.router.events
       .pipe(filter(events => events instanceof NavigationEnd))
       .subscribe(() => {
-        console.log('asdasdasdsa')
         this.drawerToggle.nativeElement.checked = false;
         this.onDrawerChange()
       });
