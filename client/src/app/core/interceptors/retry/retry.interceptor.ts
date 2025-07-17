@@ -19,7 +19,7 @@ export class RetryInterceptor implements HttpInterceptor {
           count: 3,
           delay: () => {
             this.loaderSrvc.show();
-            return timer(5000);
+            return timer(1000 * 60 * 5);
           }
         }),
         finalize(() => {

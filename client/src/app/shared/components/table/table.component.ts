@@ -5,6 +5,8 @@ import { RefreshTimerService } from '../../services/refresh-timer/refresh-timer.
 import { LoaderService } from '../../services/loader/loader.service';
 import { FilterService } from '../../services/filter/filter.service';
 import { PaginationService } from '../../services/pagination/pagination.service';
+import { catchError, finalize, of, retry, timer } from 'rxjs';
+import { ToastService } from '../../services/toast/toast.service';
 
 @Component({
   selector: 'app-table',
@@ -35,7 +37,8 @@ export class TableComponent<T> implements OnInit, OnChanges {
     private refreshTimerSrvc: RefreshTimerService,
     private loaderSrvc: LoaderService,
     private filterSrvc: FilterService<T>,
-    private paginationSrvc: PaginationService
+    private paginationSrvc: PaginationService,
+    private toastSrvc: ToastService
   ) {
     this.loaderSrvc.loading$.subscribe((state) =>
       this.isLoading = state);
@@ -74,17 +77,38 @@ export class TableComponent<T> implements OnInit, OnChanges {
   */
   requestData() {
     if (!this.config.actions['load']?.enabled) {
+      this.toastSrvc.error('Load handler is not defined');
       return;
     }
 
     this.toggleLoader(true);
 
     this.config.actions?.load?.handler()
-      .subscribe((data: T[]) => {
-        this._rows = this.filteredRows = data;
-        this.paginationSrvc.setTotal(data.length);
-        this.toggleLoader(false);
-      });
+      .pipe(
+        retry({ count: 3, delay: () => timer(2000) }),
+        catchError((error) => this.handleErrorRequest(error)),
+        finalize(() => this.toggleLoader(false))
+      ).subscribe((data: T[]) => this.handleSuccessRequest(data));
+  }
+
+  private handleErrorRequest(error: any) {
+    console.error('Error loading data', error);
+    this.toastSrvc.error('Error loading data.');
+    this.refreshTimerSrvc.stop();
+    return of(null);
+  }
+
+  private handleSuccessRequest(data: T[]) {
+    if (!data) {
+      return;
+    }
+
+    if (data.length === 0) {
+      this.toastSrvc.info('No records found.');
+    }
+
+    this._rows = this.filteredRows = data;
+    this.paginationSrvc.setTotal(data.length);
   }
 
   filterData(searchTerm: string) {

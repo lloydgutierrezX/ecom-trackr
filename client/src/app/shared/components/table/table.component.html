@@ -17,10 +17,14 @@
             </tr>
         </thead>
         <tbody>
-            @if (isLoading && filteredRows && filteredRows.length == 0) {
+            @if (filteredRows && filteredRows.length == 0) {
                 <tr>
                     <th class="text-center" [attr.colSpan]="config.columns.length + 1">
-                        Loading row data...
+                        @if (isLoading) {
+                            Loading row data...
+                        } @else {
+                            No records to show
+                        }
                     </th>
                 </tr>
             } @else {

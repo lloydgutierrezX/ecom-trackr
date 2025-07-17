@@ -5,21 +5,29 @@ import { routes } from './app.routes';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ApiPrefixInterceptor } from './core/interceptors/api-prefix/api-prefix.interceptor';
 import { RetryInterceptor } from './core/interceptors/retry/retry.interceptor';
+import { provideToastr } from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withInterceptorsFromDi()), // <- enables interceptors
     provideRouter(routes),
-
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ApiPrefixInterceptor,
       multi: true
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: RetryInterceptor,
-      multi: true
-    }
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: RetryInterceptor,
+    //   multi: true
+    // },
+    provideAnimations(),
+    provideToastr({
+      timeOut: 5000,
+      closeButton: true,
+      progressBar: true,
+      progressAnimation: 'increasing'
+    })
   ]
 };
