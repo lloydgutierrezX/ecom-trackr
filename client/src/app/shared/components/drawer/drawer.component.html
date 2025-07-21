@@ -6,12 +6,12 @@
         class="drawer-toggle"
         (change)="onDrawerChange()"
     />
-    <div class="drawer-side">
+    <div class="drawer-side" [style.height]="smallScreen ? '100vh' : 'calc(100vh - 64px)'">
         <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-        <div class="bg-base-200 w-56 flex flex-col space-between h-screen z-50">
+        <div class="bg-base-200 w-56 flex flex-col space-between z-50 h-full">
             <app-user-profile />
 
-            <app-menu class="w-56" [menus]="MENU_ITEMS_LIST" />
+            <app-menu class="w-56 h-full" [menus]="MENU_ITEMS_LIST" />
 
             <div class="absolute bottom-0 w-full p-4 border-t border-base-300">
                 <a (click)="signOut()" class="flex gap-3 text-sm cursor-pointer hover:font-bold">

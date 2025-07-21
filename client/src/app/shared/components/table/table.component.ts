@@ -46,7 +46,7 @@ export class TableComponent<T> implements OnInit, OnChanges {
 
   ngOnInit(): void {
     // auto refresh table data every 5 minutes
-    this.startRefreshTimer(Number(1000 * 30), () => this.requestData());
+    this.startRefreshTimer(Number(1000 * 60 * 5), () => this.requestData());
 
     // Get only searchable columns and extract their keys and types
     this.columns = this.config.columns.filter(column => column.searchable);
@@ -76,6 +76,7 @@ export class TableComponent<T> implements OnInit, OnChanges {
    * Updates the `rows` used by the table.
   */
   requestData() {
+    console.log('requestData called!');
     if (!this.config.actions['load']?.enabled) {
       this.toastSrvc.error('Load handler is not defined');
       return;
@@ -85,7 +86,7 @@ export class TableComponent<T> implements OnInit, OnChanges {
 
     this.config.actions?.load?.handler()
       .pipe(
-        retry({ count: 3, delay: () => timer(2000) }),
+        retry({ count: 3, delay: () => timer(1000 * 5) }), // retries each request for 3x with a 5s request delay
         catchError((error) => this.handleErrorRequest(error)),
         finalize(() => this.toggleLoader(false))
       ).subscribe((data: T[]) => this.handleSuccessRequest(data));
@@ -94,7 +95,6 @@ export class TableComponent<T> implements OnInit, OnChanges {
   private handleErrorRequest(error: any) {
     console.error('Error loading data', error);
     this.toastSrvc.error('Error loading data.');
-    this.refreshTimerSrvc.stop();
     return of(null);
   }
 
