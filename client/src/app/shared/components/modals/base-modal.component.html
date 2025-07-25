@@ -1,1 +1,16 @@
-<p>base-modal works!</p>
+<dialog #dialogEl class="modal" id="{{ modalId }}">
+    <div class="modal-box" (click)="$event.preventDefault()">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="close()">
+            ✕
+        </button>
+
+        <ng-content select="modal-title"></ng-content>
+
+        <ng-content />
+
+        <div class="modal-action">
+            <ng-content select="[modal-actions]" />
+        </div>
+    </div>
+</dialog>
+`

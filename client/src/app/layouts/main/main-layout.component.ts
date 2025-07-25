@@ -4,11 +4,13 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
 import { DrawerComponent } from '../../shared/components/drawer/drawer.component';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 import { LoaderComponent } from "../../shared/components/loader/loader.component";
+import { AlertModalComponent } from "../../shared/components/modals/types/alert-modal/alert-modal.component";
+import { FormModalComponent } from "../../shared/components/modals/types/form-modal/form-modal.component";
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterModule, NavbarComponent, DrawerComponent, LoaderComponent],
+  imports: [RouterModule, NavbarComponent, DrawerComponent, LoaderComponent, AlertModalComponent, FormModalComponent],
   templateUrl: './main-layout.component.html'
 })
 export class MainLayoutComponent implements AfterViewInit {

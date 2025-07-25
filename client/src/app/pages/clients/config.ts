@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { ITableConfig } from '../../shared/interfaces/table-config.model';
 import { ClientService } from '../../core/services/client/client.service';
 import { IClient } from '../../core/services/client/client.model';
+import { IFormConfig } from '../../shared/interfaces/form.interface';
 
 export const tableConfig = (clientSrvc: ClientService): ITableConfig<IClient> => ({
   id: 'customer-table',
@@ -62,4 +63,29 @@ export const tableConfig = (clientSrvc: ClientService): ITableConfig<IClient> =>
     }
   },
   sortBy: []
-})
+});
+
+export const formConfig: IFormConfig = {
+  name: 'client-form',
+  fields: [
+    {
+      type: 'text',
+      label: 'Name',
+      field: {
+        name: 'name',
+        validators: ['required'],
+        inputType: 'text'
+      }
+    },
+    {
+      type: 'tel',
+      label: 'Name',
+      field: {
+        name: 'contact',
+        placeholder: '+639XXXXXXXXX',
+        validators: ['mobilePH'],
+        inputType: 'tel'
+      }
+    },
+  ]
+}

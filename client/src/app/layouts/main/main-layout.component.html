@@ -1,5 +1,5 @@
 <app-navbar (toggle)="toggleDrawer()" />
-<div class="h-1 w-full">
+<div class="h-1 w-full absolute z-60">
     @if (isLoading) {
         <app-loader class="flex" />
     }
@@ -16,3 +16,7 @@
         </section>
     </main>
 </div>
+
+<!-- modals -->
+<app-alert-modal modalId="alert-modal" />
+<app-form-modal modalId="form-modal" />

@@ -1,0 +1,40 @@
+@if (form) {
+    <form [formGroup]="form">
+        @for (field of config.fields; track $index) {
+            @switch (field.type) {
+                @case ('text') {
+                    return
+                    <app-input-field></app-input-field>
+                }
+                @case ('number') {
+                    return
+                    <app-input-field></app-input-field>
+                }
+                @case ('email') {
+                    return
+                    <app-input-field></app-input-field>
+                }
+                @case ('password') {
+                    return
+                    <app-input-field></app-input-field>
+                }
+                @case ('tel') {
+                    return
+                    <app-input-field></app-input-field>
+                }
+                @case ('url') {
+                    return
+                    <app-input-field></app-input-field>
+                }
+                @case ('date') {
+                    return
+                    <app-input-field></app-input-field>
+                }
+                @case ('time') {
+                    return
+                    <app-input-field></app-input-field>
+                }
+            }
+        }
+    </form>
+}

@@ -7,4 +7,4 @@ export interface IClient {
   updatedAt: Date;
 }
 
-export type ICreateClientPayload = Omit<IClient, 'id' | 'createdAt' | 'updatedAt'>;
+// export type ICreateClientPayload = Omit<IClient, 'id' | 'createdAt' | 'updatedAt'>;
