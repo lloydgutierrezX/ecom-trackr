@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
 
+export const refreshTimer = Number(1000 * 60 * 5);
+
 @Injectable({ providedIn: 'root' })
 export class RefreshTimerService {
 

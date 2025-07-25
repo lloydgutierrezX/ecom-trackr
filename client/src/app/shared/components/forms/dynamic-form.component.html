@@ -1,40 +1,42 @@
 @if (form) {
     <form [formGroup]="form">
-        @for (field of config.fields; track $index) {
-            @switch (field.type) {
-                @case ('text') {
-                    return
-                    <app-input-field></app-input-field>
-                }
-                @case ('number') {
-                    return
-                    <app-input-field></app-input-field>
-                }
-                @case ('email') {
-                    return
-                    <app-input-field></app-input-field>
-                }
-                @case ('password') {
-                    return
-                    <app-input-field></app-input-field>
-                }
-                @case ('tel') {
+        <div class="p-1 my-5">
+            @for (formField of config.fields; track $index) {
+                <label class="label">{{ formField.label }}</label>
+
+                @switch (formField.type) {
+                    @case ('text') {
+                        <app-input-field
+                            [formControl]="getControl(formField.field.name)"
+                            [config]="formField"
+                            class="w-full"
+                        />
+                    }
+                    @case ('number') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+                    @case ('email') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+                    @case ('password') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+                    <!-- @case ('tel') {
                     return
                     <app-input-field></app-input-field>
                 }
                 @case ('url') {
                     return
                     <app-input-field></app-input-field>
-                }
-                @case ('date') {
-                    return
-                    <app-input-field></app-input-field>
-                }
-                @case ('time') {
-                    return
-                    <app-input-field></app-input-field>
+                } -->
+                    @case ('date') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+                    @case ('time') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
                 }
             }
-        }
+        </div>
     </form>
 }

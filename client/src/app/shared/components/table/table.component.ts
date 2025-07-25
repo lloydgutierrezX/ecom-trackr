@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ITableColumns, ITableConfig } from '../../interfaces/table-config.model';
 import { IconsComponent } from "../icons/icons.component";
-import { RefreshTimerService } from '../../services/refresh-timer/refresh-timer.service';
+import { refreshTimer, RefreshTimerService } from '../../services/refresh-timer/refresh-timer.service';
 import { LoaderService } from '../../services/loader/loader.service';
 import { FilterService } from '../../services/filter/filter.service';
 import { PaginationService } from '../../services/pagination/pagination.service';
@@ -46,7 +46,7 @@ export class TableComponent<T> implements OnInit, OnChanges {
 
   ngOnInit(): void {
     // auto refresh table data every 5 minutes
-    this.startRefreshTimer(Number(1000 * 60 * 5), () => this.requestData());
+    this.startRefreshTimer(refreshTimer, () => this.requestData());
 
     // Get only searchable columns and extract their keys and types
     this.columns = this.config.columns.filter(column => column.searchable);

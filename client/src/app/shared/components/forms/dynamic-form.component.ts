@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { IFormConfig, IFormFields } from '../../interfaces/form.interface';
-import { Validators, ValidatorFn, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { IFormConfig, IFormData, IFormFields } from '../../interfaces/form.interface';
+import { Validators, ValidatorFn, FormGroup, FormBuilder, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { InputFieldComponent } from './fields/input-field/input-field.component';
 import { SelectFieldComponent } from './fields/select-field/select-field.component';
 import { RadioFieldComponent } from './fields/radio-field/radio-field.component';
@@ -10,13 +10,20 @@ import { ToggleFieldComponent } from './fields/toggle-field/toggle-field.compone
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
-  imports: [ReactiveFormsModule, InputFieldComponent, SelectFieldComponent, RadioFieldComponent, TextAreaFieldComponent, ToggleFieldComponent],
+  imports: [ReactiveFormsModule, InputFieldComponent],
   templateUrl: './dynamic-form.component.html'
 })
 export class DynamicFormComponent implements OnChanges {
   @Input() config!: IFormConfig;
+  @Input() data?: IFormData;
 
   form!: FormGroup;
+
+  get title() {
+    if (!this.config) return null;
+
+    return this.data ? 'Update' : 'Add' + ' ' + this.config.moduleName;
+  }
 
   constructor(private fb: FormBuilder) { }
 
@@ -39,6 +46,13 @@ export class DynamicFormComponent implements OnChanges {
     return this.fb.group(group);
   }
 
+  getControl(name: string): FormControl {
+    const control = this.form.get(name);
+    if (!control) {
+      throw new Error(`FormControl with name '${name}' not found`);
+    }
+    return control as FormControl;
+  }
 
   private mapValidators(validatorKeys: string[]): ValidatorFn[] {
     return validatorKeys.map(key => {
@@ -46,11 +60,14 @@ export class DynamicFormComponent implements OnChanges {
         case 'required':
           return Validators.required;
 
+        case 'number':
+          return Validators.pattern(/^\d+$/);
+
         case 'email':
           return Validators.email;
 
         case 'mobilePH':
-          return Validators.pattern(/^(\+639)\d{9}$/);
+          return Validators.pattern(/^\+639\d{9}$/);
 
         default:
           return Validators.nullValidator;

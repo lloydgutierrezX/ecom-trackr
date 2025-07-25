@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ModalService } from '../../../../services/modal/modal.service';
 import { BaseModalComponent } from '../../base-modal.component';
 import { DynamicFormComponent } from "../../../forms/dynamic-form.component";
-import { IFormConfig } from '../../../../interfaces/form.interface';
+import { IFormConfig, IFormData } from '../../../../interfaces/form.interface';
 
 @Component({
   selector: 'app-form-modal',
@@ -12,15 +12,26 @@ import { IFormConfig } from '../../../../interfaces/form.interface';
 })
 export class FormModalComponent {
   @Input() modalId: string = 'form-modal';
-  formFields!: IFormConfig;
+
+  config!: IFormConfig;
+  formData?: IFormData;
+
+  title: string = '';
 
   constructor(private modalSrvc: ModalService) {
-    this.modalSrvc.onOpen$.subscribe(({ id, data }) => {
+    this.modalSrvc.onOpen$.subscribe(({ id, config, data }) => {
       if (id !== this.modalId) {
         return;
       }
 
-      this.formFields = data;
+      this.config = config;
+      this.formData = data ?? undefined;
+
+      this.title = data ? 'Update ' : 'Add ' + this.config.moduleName;
     })
+  }
+
+  onClick(type: string): void {
+    // call form service
   }
 }

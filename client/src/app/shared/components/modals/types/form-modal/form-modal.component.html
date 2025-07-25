@@ -1,3 +1,18 @@
 <app-base-modal [modalId]="modalId">
-    <app-dynamic-form [config]="formFields"></app-dynamic-form>
+    <ng-content modal-title>
+        <h2 class="text-lg font-bold">{{ title }}</h2>
+        <hr class="my-2 border-t border-gray-300" />
+    </ng-content>
+
+    <app-dynamic-form [config]="config" [data]="formData"></app-dynamic-form>
+
+    <ng-content modal-actions>
+        @if (config && config.actions) {
+            @for (action of config.actions; track $index) {
+                <button [class]="'btn ' + action.className" (click)="onClick(action.value)">
+                    {{ action.label }}
+                </button>
+            }
+        }
+    </ng-content>
 </app-base-modal>

@@ -67,25 +67,44 @@ export const tableConfig = (clientSrvc: ClientService): ITableConfig<IClient> =>
 
 export const formConfig: IFormConfig = {
   name: 'client-form',
+  moduleName: 'clients',
   fields: [
     {
       type: 'text',
       label: 'Name',
+      container: {
+        className: 'w-full'
+      },
       field: {
         name: 'name',
         validators: ['required'],
-        inputType: 'text'
+        type: 'text'
       }
     },
     {
       type: 'tel',
-      label: 'Name',
+      label: 'Mobile',
+      container: {
+        className: 'w-full'
+      },
       field: {
         name: 'contact',
         placeholder: '+639XXXXXXXXX',
         validators: ['mobilePH'],
-        inputType: 'tel'
+        type: 'tel'
       }
+    },
+  ],
+  actions: [
+    {
+      value: 'close',
+      label: 'Cancel',
+      className: 'btn btn-md'
+    },
+    {
+      value: 'save',
+      label: 'Save',
+      className: 'btn btn-md btn-primary'
     },
   ]
 }

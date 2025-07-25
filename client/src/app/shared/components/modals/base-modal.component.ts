@@ -17,9 +17,7 @@ export class BaseModalComponent implements OnInit, OnDestroy {
   private subClose?: Subscription;
   data: any;
 
-  constructor(
-    private modalSrvc: ModalService
-  ) { }
+  constructor(private modalSrvc: ModalService) { }
 
   ngOnInit(): void {
     this.subOpen = this.modalSrvc.onOpen$.subscribe(({ id, data }) => {
