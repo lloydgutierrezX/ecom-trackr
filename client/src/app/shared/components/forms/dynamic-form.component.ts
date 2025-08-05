@@ -6,23 +6,36 @@ import { SelectFieldComponent } from './fields/select-field/select-field.compone
 import { RadioFieldComponent } from './fields/radio-field/radio-field.component';
 import { TextAreaFieldComponent } from './fields/text-area-field/text-area-field.component';
 import { ToggleFieldComponent } from './fields/toggle-field/toggle-field.component';
+import { TelFieldComponent } from './fields/tel-field/tel-field.component';
+import { FormErrorComponent } from "./errors/form-error.component";
+import { mapValidators } from '../../utils/validators.util';
 
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
-  imports: [ReactiveFormsModule, InputFieldComponent],
+  imports: [ReactiveFormsModule, InputFieldComponent, TelFieldComponent, FormErrorComponent],
   templateUrl: './dynamic-form.component.html'
 })
 export class DynamicFormComponent implements OnChanges {
   @Input() config!: IFormConfig;
+  @Input() reset: boolean = false;
   @Input() data?: IFormData;
 
   form!: FormGroup;
+  commonInputTypes = ['text', 'number', 'password'];
 
   get title() {
     if (!this.config) return null;
 
     return this.data ? 'Update' : 'Add' + ' ' + this.config.moduleName;
+  }
+
+  get formGroup(): FormGroup {
+    return this.form;
+  }
+
+  get formData(): IFormData {
+    return this.form.value;
   }
 
   constructor(private fb: FormBuilder) { }
@@ -31,7 +44,10 @@ export class DynamicFormComponent implements OnChanges {
     if (changes['config'] && !changes['config'].firstChange) {
       const { fields } = this.config;
       this.form = this.buildForm(fields);
-      console.log(this.form);
+    }
+
+    if (changes['reset'] && changes['reset'].currentValue === true) {
+      this.resetForm();
     }
   }
 
@@ -39,7 +55,7 @@ export class DynamicFormComponent implements OnChanges {
     const group: { [key: string]: any } = {};
 
     formFields.forEach(formField => {
-      const validators = this.mapValidators(formField.field.validators ?? []);
+      const validators = mapValidators(formField.field.validators ?? []);
       group[formField.field.name] = this.fb.control('', validators);
     });
 
@@ -54,24 +70,7 @@ export class DynamicFormComponent implements OnChanges {
     return control as FormControl;
   }
 
-  private mapValidators(validatorKeys: string[]): ValidatorFn[] {
-    return validatorKeys.map(key => {
-      switch (key) {
-        case 'required':
-          return Validators.required;
-
-        case 'number':
-          return Validators.pattern(/^\d+$/);
-
-        case 'email':
-          return Validators.email;
-
-        case 'mobilePH':
-          return Validators.pattern(/^\+639\d{9}$/);
-
-        default:
-          return Validators.nullValidator;
-      }
-    });
+  resetForm() {
+    this.form.reset();
   }
 }

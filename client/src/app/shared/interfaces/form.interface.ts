@@ -1,8 +1,11 @@
+export type IFormIDs = 'form-modal' | 'alert-modal' | 'confirm-modal';
+
 export type IFormData = Record<string, string | number | boolean | null>;
 
 export interface IFormConfig {
   name: string; // form name
   moduleName: string;
+  reset: boolean;
   fields: IFormFields[]; // form fields[]
   actions: {
     value: string;

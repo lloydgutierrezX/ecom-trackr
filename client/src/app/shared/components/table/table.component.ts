@@ -76,7 +76,6 @@ export class TableComponent<T> implements OnInit, OnChanges {
    * Updates the `rows` used by the table.
   */
   requestData() {
-    console.log('requestData called!');
     if (!this.config.actions['load']?.enabled) {
       this.toastSrvc.error('Load handler is not defined');
       return;

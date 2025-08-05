@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { refreshTimer, RefreshTimerService } from '../refresh-timer/refresh-timer.service';
+import { IFormIDs } from '../../interfaces/form.interface';
 
 interface IModalOpenPayload {
   id: string;
@@ -19,14 +20,14 @@ export class ModalService {
   onOpen$: Observable<IModalOpenPayload> = this.openSubject.asObservable();
   onClose$: Observable<string> = this.closeSubject.asObservable();
 
-  open(id: string, config?: any, data?: any) {
+  open(id: IFormIDs, config?: any, data?: any) {
     if (id === 'form-modal') {
       this.refreshSrvc.stop();
     }
     this.openSubject.next({ id, config, data });
   }
 
-  close(id: string) {
+  close(id: IFormIDs) {
     if (id === 'form-modal') {
       this.refreshSrvc.stop();
       this.refreshSrvc.start(refreshTimer);

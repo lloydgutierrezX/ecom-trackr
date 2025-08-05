@@ -1,0 +1,25 @@
+<div class="px-2 py-2 text-xs text-red-500">
+    @if (errors?.['required']) {
+        <p>Must not be empty</p>
+    }
+
+    @if (errors?.['mobilePH']) {
+        <p>Should be a valid philippine mobile number (+639XX XXX XXXX)</p>
+    }
+
+    @if (errors?.['email']) {
+        <p>Must be a valid email</p>
+    }
+
+    @if (errors?.['pattern']) {
+        <p>Must match the given RegEx pattern ({{ errors?.['pattern']?.['requiredPattern'] }})</p>
+    }
+
+    @if (errors?.['minlength']) {
+        <p>Must be atleast {{ errors?.['minlength']?.['requiredLength'] }} characters</p>
+    }
+
+    @if (errors?.['maxlength']) {
+        <p>Must be less than {{ errors?.['maxlength']?.['requiredLength'] }} characters</p>
+    }
+</div>

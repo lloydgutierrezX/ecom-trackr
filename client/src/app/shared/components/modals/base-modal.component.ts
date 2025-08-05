@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { ModalService } from '../../services/modal/modal.service';
+import { IFormIDs } from '../../interfaces/form.interface';
 
 @Component({
   selector: 'app-base-modal',
@@ -9,9 +10,10 @@ import { ModalService } from '../../services/modal/modal.service';
   templateUrl: './base-modal.component.html'
 })
 export class BaseModalComponent implements OnInit, OnDestroy {
-  @Input() modalId!: string;
+  @Input() modalId!: IFormIDs;
 
   @ViewChild('dialogEl') dialogRef!: ElementRef<HTMLDialogElement>;
+  private destroy$ = new Subject<void>();
 
   private subOpen?: Subscription;
   private subClose?: Subscription;
@@ -20,14 +22,16 @@ export class BaseModalComponent implements OnInit, OnDestroy {
   constructor(private modalSrvc: ModalService) { }
 
   ngOnInit(): void {
-    this.subOpen = this.modalSrvc.onOpen$.subscribe(({ id, data }) => {
-      if (id !== this.modalId) {
-        return;
-      }
+    this.subOpen = this.modalSrvc.onOpen$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ id, data }) => {
+        if (id !== this.modalId) {
+          return;
+        }
 
-      this.data = data;
-      this.dialogRef.nativeElement.showModal();
-    });
+        this.data = data;
+        this.dialogRef.nativeElement.showModal();
+      });
 
     this.subClose = this.modalSrvc.onClose$.subscribe((id) => {
       if (id !== this.modalId) {
@@ -41,6 +45,8 @@ export class BaseModalComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subClose?.unsubscribe();
     this.subOpen?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   close() {

@@ -68,6 +68,7 @@ export const tableConfig = (clientSrvc: ClientService): ITableConfig<IClient> =>
 export const formConfig: IFormConfig = {
   name: 'client-form',
   moduleName: 'clients',
+  reset: false,
   fields: [
     {
       type: 'text',
@@ -77,7 +78,7 @@ export const formConfig: IFormConfig = {
       },
       field: {
         name: 'name',
-        validators: ['required'],
+        validators: ['required', 'minLength:3'],
         type: 'text'
       }
     },
@@ -89,7 +90,7 @@ export const formConfig: IFormConfig = {
       },
       field: {
         name: 'contact',
-        placeholder: '+639XXXXXXXXX',
+        placeholder: '+63 9XX XXX XXXX',
         validators: ['mobilePH'],
         type: 'tel'
       }
@@ -106,5 +107,5 @@ export const formConfig: IFormConfig = {
       label: 'Save',
       className: 'btn btn-md btn-primary'
     },
-  ]
+  ],
 }

@@ -12,6 +12,13 @@
                             class="w-full"
                         />
                     }
+                    @case ('tel') {
+                        <app-tel-field
+                            [formControl]="getControl(formField.field.name)"
+                            [config]="formField"
+                            class="w-full"
+                        ></app-tel-field>
+                    }
                     @case ('number') {
                         <!-- <app-input-field></app-input-field> -->
                     }
@@ -21,20 +28,25 @@
                     @case ('password') {
                         <!-- <app-input-field></app-input-field> -->
                     }
-                    <!-- @case ('tel') {
-                    return
-                    <app-input-field></app-input-field>
-                }
-                @case ('url') {
-                    return
-                    <app-input-field></app-input-field>
-                } -->
+
+                    <!-- @case ('url') {
+                        return
+                        <app-input-field></app-input-field>
+                    } -->
                     @case ('date') {
                         <!-- <app-input-field></app-input-field> -->
                     }
                     @case ('time') {
                         <!-- <app-input-field></app-input-field> -->
                     }
+                }
+
+                @if (
+                    getControl(formField.field.name).invalid &&
+                    (getControl(formField.field.name).dirty ||
+                        getControl(formField.field.name).touched)
+                ) {
+                    <app-form-error [errors]="getControl(formField.field.name).errors" />
                 }
             }
         </div>

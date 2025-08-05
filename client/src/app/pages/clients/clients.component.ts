@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { TableComponent } from '../../shared/components/table/table.component';
 import { formConfig, tableConfig } from './config';
 import { ITableConfig } from '../../shared/interfaces/table-config.model';
@@ -9,6 +9,7 @@ import { ListLayoutComponent } from '../../shared/components/list-layout/list-la
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import { ModalService } from '../../shared/services/modal/modal.service';
 import { IFormConfig } from '../../shared/interfaces/form.interface';
+import { DynamicFormComponent } from '../../shared/components/forms/dynamic-form.component';
 @Component({
   selector: 'app-clients',
   standalone: true,
@@ -33,11 +34,24 @@ export class ClientsComponent {
   }
 
   onAdd() {
-    this.modalSrvc.open('form-modal', this.clientFormConfig);
+    this.openFormModal('create');
   }
 
   onEdit(data: IClient) {
+    this.openFormModal('update', data);
+  }
 
+  openFormModal(type: 'create' | 'update', data?: any): void {
+    const action = this.tableConfig.actions[type];
+    if (!action || !action.enabled) {
+      return;
+    }
+
+    this.modalSrvc.open('form-modal', {
+      handler: action.handler,
+      formConfig: this.clientFormConfig,
+      type
+    })
   }
 
   onDelete(id: number) {

@@ -4,7 +4,7 @@
         <hr class="my-2 border-t border-gray-300" />
     </ng-content>
 
-    <app-dynamic-form [config]="config" [data]="formData"></app-dynamic-form>
+    <app-dynamic-form [config]="config" [data]="formData" [reset]="resetForm"></app-dynamic-form>
 
     <ng-content modal-actions>
         @if (config && config.actions) {

@@ -1,1 +1,16 @@
-<p>tel-field works!</p>
+<label
+    class="input text-sm focus-within:outline-none focus-within:ring-0 border-gray-400 flex items-center gap-2"
+>
+    <app-icons [name]="'phone'" />
+    <input
+        (input)="handleInput($event)"
+        [formControl]="formControl"
+        [name]="config.field.name"
+        [class]="'grow' + ' ' + (config.container?.className ?? '')"
+        [type]="config.type || 'text'"
+        [attr.style]="config.container?.cssStyle"
+        [placeholder]="config.field.placeholder ?? ''"
+        [readOnly]="config.field.readonly || false"
+        [autocomplete]="config.field.autoComplete || 'off'"
+    />
+</label>

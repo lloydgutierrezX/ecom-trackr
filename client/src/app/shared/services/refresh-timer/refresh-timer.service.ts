@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, interval, Subscription } from 'rxjs';
+import { interval, Subject, Subscription } from 'rxjs';
 
 export const refreshTimer = Number(1000 * 60 * 5);
 
 @Injectable({ providedIn: 'root' })
 export class RefreshTimerService {
 
-  private refreshSubject = new BehaviorSubject<void>(undefined);
+  private refreshSubject = new Subject<void>();
   refesh$ = this.refreshSubject.asObservable();
 
   private subs?: Subscription;
