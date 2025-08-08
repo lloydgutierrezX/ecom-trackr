@@ -31,10 +31,10 @@ export class ClientService {
   }
 
   update(id: number, client: Partial<IClient>) {
-    return this.http.put<IClient>(`${this.endpoint}/${id}}`, client);
+    return this.http.put<IClient>(`${this.endpoint}/${id}`, client);
   }
 
   delete(id: number) {
-    return this.http.delete<IClient>(`${this.endpoint}/${id}}`);
+    return this.http.delete<IClient>(`${this.endpoint}/${id}`);
   }
 }

@@ -7,6 +7,8 @@ import { ValidationErrors } from '@angular/forms';
 import { IFormErrorResponse } from '../../interfaces/form.interface';
 import { LoadDataService } from '../load-data/load-data.service';
 
+export type IFormService<T> = Observable<T | { error: any } | null>;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,11 +20,16 @@ export class FormService {
     private loadDataSrvc: LoadDataService) { }
 
   private formErrorSubject = new BehaviorSubject<ValidationErrors>({});
-  formError$ = this.formErrorSubject.asObservable();;
+  formError$ = this.formErrorSubject.asObservable();
 
-  onSave<T>(payload: T, handler: (payload: T) => Observable<any>): Observable<T | null> {
+  onSave<T>(id: string | null, payload: T, handler: ((payload: T) => Observable<any>) | ((id: string, payload: T) => Observable<any>)): IFormService<T | null> {
     this.loaderSrvc.show();
-    return handler(payload)
+
+    const request$ = id ?
+      (handler as (id: string, payload: T) => Observable<any>)(id, payload) :
+      (handler as (payload: T) => Observable<any>)(payload);
+
+    return request$
       .pipe(
         take(1),
         tap(() => {
@@ -49,7 +56,7 @@ export class FormService {
   }
 
   // handles form error from server response
-  onError(errors: IFormErrorResponse[]) {
+  private onError(errors: IFormErrorResponse[]) {
     if (errors.length === 0) {
       return;
     }

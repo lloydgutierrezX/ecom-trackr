@@ -51,7 +51,6 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     this.formSrvc.formError$
       .pipe(takeUntil(this.destroy$))
       .subscribe(errors => {
-        console.log(errors)
         if (!this.form || !errors) {
           return;
         }
@@ -78,6 +77,10 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
 
     if (changes['reset'] && changes['reset'].currentValue === true) {
       this.resetForm();
+    }
+
+    if (changes['data'] && !changes['data'].firstChange) {
+      this.form.patchValue(changes['data'].currentValue);
     }
   }
 

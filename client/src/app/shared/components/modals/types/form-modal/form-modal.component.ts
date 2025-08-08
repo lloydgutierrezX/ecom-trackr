@@ -47,7 +47,7 @@ export class FormModalComponent implements OnInit, OnDestroy {
         this.formData = data ?? undefined;
         this.resetForm = true;
 
-        this.title = data ? 'Update ' : 'Add ' + this.config.moduleName;
+        this.title = (data ? 'Update ' : 'Add ') + this.config.moduleName;
       });
 
     this.modalSrvc.onClose$
@@ -61,7 +61,6 @@ export class FormModalComponent implements OnInit, OnDestroy {
   }
 
   onClick(type: string): void {
-    console.log('onclick', type);
     if (type === 'close') {
       console.log('close is clicked');
       this.modalSrvc.close(this.modalId);
@@ -75,7 +74,8 @@ export class FormModalComponent implements OnInit, OnDestroy {
       }
 
       const payload = this.formComponent?.formData;
-      this.formSrvc.onSave(payload, this.handler)
+      const id = (this.formData?.['id'] as string) || null;
+      this.formSrvc.onSave(id, payload, this.handler)
         .subscribe((result) => {
           if (result && !result['error']) {
             this.modalSrvc.close(this.modalId);

@@ -51,7 +51,7 @@ export class ClientsComponent {
       handler: action.handler,
       formConfig: this.clientFormConfig,
       type
-    })
+    }, data);
   }
 
   onDelete(id: number) {
