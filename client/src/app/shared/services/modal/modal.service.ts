@@ -7,6 +7,7 @@ interface IModalOpenPayload {
   id: string;
   config?: any;
   data?: any;
+  loadHandler?: () => void;
 }
 
 @Injectable({ providedIn: 'root' })

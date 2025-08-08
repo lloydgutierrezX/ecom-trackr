@@ -61,7 +61,9 @@ export class FormModalComponent implements OnInit, OnDestroy {
   }
 
   onClick(type: string): void {
+    console.log('onclick', type);
     if (type === 'close') {
+      console.log('close is clicked');
       this.modalSrvc.close(this.modalId);
     }
 
@@ -74,7 +76,11 @@ export class FormModalComponent implements OnInit, OnDestroy {
 
       const payload = this.formComponent?.formData;
       this.formSrvc.onSave(payload, this.handler)
-        .subscribe(() => this.modalSrvc.close(this.modalId));
+        .subscribe((result) => {
+          if (result && !result['error']) {
+            this.modalSrvc.close(this.modalId);
+          }
+        });
     }
   }
 }

@@ -2,6 +2,8 @@ export type IFormIDs = 'form-modal' | 'alert-modal' | 'confirm-modal';
 
 export type IFormData = Record<string, string | number | boolean | null>;
 
+export type IFormErrorResponse = Record<string, string>;
+
 export interface IFormConfig {
   name: string; // form name
   moduleName: string;

@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ITableColumns, ITableConfig } from '../../interfaces/table-config.model';
 import { IconsComponent } from "../icons/icons.component";
 import { refreshTimer, RefreshTimerService } from '../../services/refresh-timer/refresh-timer.service';
 import { LoaderService } from '../../services/loader/loader.service';
 import { FilterService } from '../../services/filter/filter.service';
 import { PaginationService } from '../../services/pagination/pagination.service';
-import { catchError, finalize, of, retry, timer } from 'rxjs';
+import { catchError, finalize, of, retry, Subject, takeUntil, timer } from 'rxjs';
 import { ToastService } from '../../services/toast/toast.service';
+import { LoadDataService } from '../../services/load-data/load-data.service';
 
 @Component({
   selector: 'app-table',
@@ -14,7 +15,7 @@ import { ToastService } from '../../services/toast/toast.service';
   imports: [IconsComponent],
   templateUrl: './table.component.html'
 })
-export class TableComponent<T> implements OnInit, OnChanges {
+export class TableComponent<T> implements OnInit, OnChanges, OnDestroy {
 
   @Input() config!: ITableConfig<T>;
   @Input() search = '';
@@ -27,6 +28,8 @@ export class TableComponent<T> implements OnInit, OnChanges {
 
   isLoading = false;
 
+  destroy$ = new Subject<void>();
+
   get pagedRows(): T[] {
     const start = (this.paginationSrvc.currentPage() - 1) * this.paginationSrvc.pageSize();
     const end = start + this.paginationSrvc.pageSize();
@@ -38,13 +41,24 @@ export class TableComponent<T> implements OnInit, OnChanges {
     private loaderSrvc: LoaderService,
     private filterSrvc: FilterService<T>,
     private paginationSrvc: PaginationService,
-    private toastSrvc: ToastService
+    private toastSrvc: ToastService,
+    private loadDataSrvc: LoadDataService
   ) {
     this.loaderSrvc.loading$.subscribe((state) =>
       this.isLoading = state);
   }
 
   ngOnInit(): void {
+
+    this.loadDataSrvc.onReload()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        console.log('Reloading data...');
+        this.requestData();
+      });
+
+    this.requestData();
+
     // auto refresh table data every 5 minutes
     this.startRefreshTimer(refreshTimer, () => this.requestData());
 
@@ -58,6 +72,12 @@ export class TableComponent<T> implements OnInit, OnChanges {
       this.filterData(changes['search'].currentValue);
       this.toggleLoader(false);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.refreshTimerSrvc.stop();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**

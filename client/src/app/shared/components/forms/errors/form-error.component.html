@@ -22,4 +22,8 @@
     @if (errors?.['maxlength']) {
         <p>Must be less than {{ errors?.['maxlength']?.['requiredLength'] }} characters</p>
     }
+
+    @if (errors?.['invalid_type']) {
+        <p>{{ errors?.['invalid_type'] || 'Server responds with invalid type.' }}</p>
+    }
 </div>
