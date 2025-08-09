@@ -3,7 +3,6 @@
 >
     <app-icons [name]="'phone'" />
     <input
-        (input)="handleInput($event)"
         [formControl]="formControl"
         [name]="config.field.name"
         [class]="'grow' + ' ' + (config.container?.className ?? '')"
@@ -12,5 +11,6 @@
         [placeholder]="config.field.placeholder ?? ''"
         [readOnly]="config.field.readonly || false"
         [autocomplete]="config.field.autoComplete || 'off'"
+        maxlength="13"
     />
 </label>

@@ -20,7 +20,7 @@ export class TableComponent<T> implements OnInit, OnChanges, OnDestroy {
   @Input() config!: ITableConfig<T>;
   @Input() search = '';
   @Output() onEdit = new EventEmitter<T>();
-  @Output() onDelete = new EventEmitter<number>();
+  @Output() onDelete = new EventEmitter<T>();
 
   _rows: T[] = [];
   filteredRows: T[] = [];
@@ -145,7 +145,7 @@ export class TableComponent<T> implements OnInit, OnChanges, OnDestroy {
   }
 
   onDeleteRow(row: T) {
-    this.onDelete.emit(Number((row as any)?.id));
+    this.onDelete.emit(row);
   }
 
   toggleLoader(state: boolean) {

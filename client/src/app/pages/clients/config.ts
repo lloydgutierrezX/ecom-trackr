@@ -3,6 +3,9 @@ import { ITableConfig } from '../../shared/interfaces/table-config.model';
 import { ClientService } from '../../core/services/client/client.service';
 import { IClient } from '../../core/services/client/client.model';
 import { IFormConfig } from '../../shared/interfaces/form.interface';
+import { MobilePhPipe } from '../../shared/pipes/mobile-ph/mobile-ph.pipe';
+
+const mobilePhPipe = new MobilePhPipe();
 
 export const tableConfig = (clientSrvc: ClientService): ITableConfig<IClient> => ({
   id: 'customer-table',
@@ -23,7 +26,7 @@ export const tableConfig = (clientSrvc: ClientService): ITableConfig<IClient> =>
     },
     {
       label: 'Contact',
-      valueFn: (data: any) => data.contact,
+      valueFn: (data: any) => mobilePhPipe.transform(data.contact),
       style: 'width: 20%',
       key: 'contact',
       searchable: true
@@ -90,9 +93,9 @@ export const formConfig: IFormConfig = {
       },
       field: {
         name: 'contact',
-        placeholder: '+63 9XX XXX XXXX',
+        placeholder: '+639XXXXXXXXX',
         validators: ['mobilePH'],
-        type: 'tel'
+        type: 'tel',
       }
     },
   ],

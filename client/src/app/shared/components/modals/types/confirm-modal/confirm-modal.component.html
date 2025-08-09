@@ -1,1 +1,30 @@
-<p>confirm-modal works!</p>
+<app-base-modal [modalId]="modalId">
+    <ng-content modal-title>
+        <h2 class="text-lg font-bold">{{ title }}</h2>
+        <hr class="my-2 border-t border-gray-300" />
+    </ng-content>
+
+    <p class="py-4">
+        {{ message }}
+    </p>
+
+    <ng-content modal-actions>
+        <button
+            area-label="Cancel"
+            class="btn btn-md"
+            (click)="onClick('cancel')"
+            [disabled]="isDisabled"
+        >
+            Cancel
+        </button>
+
+        <button
+            area-label="Confirm"
+            class="btn btn-md btn-primary"
+            (click)="onClick('confirm')"
+            [disabled]="isDisabled"
+        >
+            Confirm
+        </button>
+    </ng-content>
+</app-base-modal>

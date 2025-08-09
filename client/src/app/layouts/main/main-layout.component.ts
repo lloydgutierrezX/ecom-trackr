@@ -6,11 +6,12 @@ import { LoaderService } from '../../shared/services/loader/loader.service';
 import { LoaderComponent } from "../../shared/components/loader/loader.component";
 import { AlertModalComponent } from "../../shared/components/modals/types/alert-modal/alert-modal.component";
 import { FormModalComponent } from "../../shared/components/modals/types/form-modal/form-modal.component";
+import { ConfirmModalComponent } from '../../shared/components/modals/types/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterModule, NavbarComponent, DrawerComponent, LoaderComponent, AlertModalComponent, FormModalComponent],
+  imports: [RouterModule, NavbarComponent, DrawerComponent, LoaderComponent, AlertModalComponent, FormModalComponent, ConfirmModalComponent],
   templateUrl: './main-layout.component.html'
 })
 export class MainLayoutComponent implements AfterViewInit {

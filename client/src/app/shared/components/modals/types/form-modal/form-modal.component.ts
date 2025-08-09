@@ -62,7 +62,6 @@ export class FormModalComponent implements OnInit, OnDestroy {
 
   onClick(type: string): void {
     if (type === 'close') {
-      console.log('close is clicked');
       this.modalSrvc.close(this.modalId);
     }
 

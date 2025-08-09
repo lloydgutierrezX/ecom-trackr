@@ -32,13 +32,9 @@ export class FormService {
     return request$
       .pipe(
         take(1),
-        tap(() => {
-          this.loadDataSrvc.trigger();
-          this.refreshTimerSrvc.stop();
-          this.refreshTimerSrvc.start(refreshTimer);
-          this.toastSrvc.success('Saved successfully!')
-        }),
+        tap(() => this.onSuccess(id ? 'Record updated successfully.' : 'Record added successfully.')),
         catchError((response) => {
+          console.error('Form submission error:', response);
           this.onError(response.error.errors);
           this.toastSrvc.error('Something went wrong.');
           return of({ error: response.error.errors });
@@ -47,12 +43,30 @@ export class FormService {
       )
   }
 
-  onDelete() {
+  onDelete<T>(id: string, handler: (id: string) => Observable<T>): IFormService<T | null> {
+    if (!id || !handler) {
+      console.error('Delete handler is not defined or id is missing.');
+      return of(null);
+    }
 
+    return handler(id)
+      .pipe(
+        take(1),
+        tap(() => this.onSuccess('Record deleted successfully.')),
+        catchError((response) => {
+          console.error('Delete error:', response);
+          this.toastSrvc.error('Something went wrong.');
+          return of({ error: response.error.errors });
+        }),
+        finalize(() => this.loaderSrvc.hide())
+      );
   }
 
-  onReset() {
-
+  private onSuccess(toastMessage: string) {
+    this.loadDataSrvc.trigger();
+    this.refreshTimerSrvc.stop();
+    this.refreshTimerSrvc.start(refreshTimer);
+    this.toastSrvc.success(toastMessage);
   }
 
   // handles form error from server response

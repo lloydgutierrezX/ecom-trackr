@@ -9,4 +9,8 @@ import { ValidationErrors } from '@angular/forms';
 })
 export class FormErrorComponent {
   @Input() errors: ValidationErrors | null = null;
+
+  checkMobilePattern(pattern: string): boolean {
+    return pattern.includes('\\+639\\d{9}');
+  }
 }

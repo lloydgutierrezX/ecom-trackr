@@ -22,14 +22,14 @@ export class ModalService {
   onClose$: Observable<string> = this.closeSubject.asObservable();
 
   open(id: IFormIDs, config?: any, data?: IFormData) {
-    if (id === 'form-modal') {
+    if (id !== 'alert-modal') {
       this.refreshSrvc.stop();
     }
     this.openSubject.next({ id, config, data });
   }
 
   close(id: IFormIDs) {
-    if (id === 'form-modal') {
+    if (id !== 'form-modal') {
       this.refreshSrvc.stop();
       this.refreshSrvc.start(refreshTimer);
     }

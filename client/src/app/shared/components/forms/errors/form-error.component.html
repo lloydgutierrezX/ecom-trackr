@@ -12,7 +12,11 @@
     }
 
     @if (errors?.['pattern']) {
-        <p>Must match the given RegEx pattern ({{ errors?.['pattern']?.['requiredPattern'] }})</p>
+        @if (checkMobilePattern(errors?.['pattern']?.['requiredPattern'])) {
+            <p>Must match a valid PH mobile number. Example: +63912345678</p>
+        } @else {
+            <p>Must match the given RegEx pattern {{ errors?.['pattern']?.['requiredPattern'] }}</p>
+        }
     }
 
     @if (errors?.['minlength']) {

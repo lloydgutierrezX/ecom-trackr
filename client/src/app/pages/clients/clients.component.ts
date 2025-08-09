@@ -8,7 +8,7 @@ import { SearchComponent } from "../../shared/components/search/search.component
 import { ListLayoutComponent } from '../../shared/components/list-layout/list-layout.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import { ModalService } from '../../shared/services/modal/modal.service';
-import { IFormConfig } from '../../shared/interfaces/form.interface';
+import { IFormConfig, IFormData } from '../../shared/interfaces/form.interface';
 import { DynamicFormComponent } from '../../shared/components/forms/dynamic-form.component';
 @Component({
   selector: 'app-clients',
@@ -54,8 +54,17 @@ export class ClientsComponent {
     }, data);
   }
 
-  onDelete(id: number) {
-
+  onDelete(data: IClient) {
+    this.modalSrvc.open('confirm-modal',
+      {
+        type: 'delete',
+        handler: this.tableConfig.actions.delete?.handler
+      },
+      {
+        id: data.id,
+        name: data.name
+      }
+    );
   }
 
 }
