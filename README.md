@@ -1,10 +1,10 @@
 # ecom-trackr 🛒
 
-A full-stack inventory and transaction tracking system — starting with a robust backend and soon expanding into a full Angular-based e-commerce dashboard.
+A full-stack inventory and transaction tracking system created by PEAN (PostgreSQL, Express (TS), Node, Angular) stack.
 
 # 🧰 Tech Stack
 
-### ✅ Backend (Live)
+### ✅ Backend
 
 - Node.js + Express
 - TypeScript
@@ -14,7 +14,7 @@ A full-stack inventory and transaction tracking system — starting with a robus
 - dotenv (Config)
 - CORS (API middleware)
 
-### 🔜 Frontend (Planned)
+### 🔜 Frontend
 
 - Angular
 - Angular Forms / Reactive Forms

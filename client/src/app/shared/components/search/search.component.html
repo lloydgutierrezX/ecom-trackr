@@ -1,0 +1,11 @@
+<label
+    class="input input-bordered flex items-center gap-2 input-sm focus-within:outline-none focus-within:ring-0 focus-within:shadow-none"
+>
+    <app-icons [name]="'search'" />
+    <input
+        type="search"
+        class="grow text-sm bg-transparent focus:outline-none"
+        [placeholder]="placeholder"
+        (input)="onInput($event)"
+    />
+</label>

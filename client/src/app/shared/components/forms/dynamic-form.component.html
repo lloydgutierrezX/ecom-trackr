@@ -1,0 +1,54 @@
+@if (form) {
+    <form [formGroup]="form">
+        <div class="p-1 my-5">
+            @for (formField of config.fields; track $index) {
+                <label class="label">{{ formField.label }}</label>
+
+                @switch (formField.type) {
+                    @case ('text') {
+                        <app-input-field
+                            [formControl]="getControl(formField.field.name)"
+                            [config]="formField"
+                            class="w-full"
+                        />
+                    }
+                    @case ('tel') {
+                        <app-tel-field
+                            [formControl]="getControl(formField.field.name)"
+                            [config]="formField"
+                            class="w-full"
+                        ></app-tel-field>
+                    }
+                    @case ('number') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+                    @case ('email') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+                    @case ('password') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+
+                    <!-- @case ('url') {
+                        return
+                        <app-input-field></app-input-field>
+                    } -->
+                    @case ('date') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+                    @case ('time') {
+                        <!-- <app-input-field></app-input-field> -->
+                    }
+                }
+
+                @if (
+                    getControl(formField.field.name).invalid &&
+                    (getControl(formField.field.name).dirty ||
+                        getControl(formField.field.name).touched)
+                ) {
+                    <app-form-error [errors]="getControl(formField.field.name).errors" />
+                }
+            }
+        </div>
+    </form>
+}

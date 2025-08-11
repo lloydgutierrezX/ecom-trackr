@@ -1,0 +1,26 @@
+<app-list-layout title="Clients">
+    <div search>
+        <app-search (search)="onSearch($event)" />
+    </div>
+
+    <!-- <div filters>
+        <app-filter
+    </div> -->
+
+    <div add-button>
+        <button class="btn btn-sm btn-primary rounded-md" (click)="onAdd()">+ Add Clients</button>
+    </div>
+
+    <div table>
+        <app-table
+            [config]="tableConfig"
+            [search]="searchTerm"
+            (onEdit)="onEdit($event)"
+            (onDelete)="onDelete($event)"
+        />
+    </div>
+
+    <div pagination>
+        <app-pagination />
+    </div>
+</app-list-layout>

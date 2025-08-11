@@ -1,0 +1,16 @@
+<div class="navbar bg-base-100 shadow-sm lg:drawer-open gap-1">
+    <div class="flex-none">
+        <button class="toggle-button btn btn-square btn-ghost rounded-md lg:hidden" (click)="emitToggle()">
+            <lucide-angular [img]="Menu" class="my-icon"></lucide-angular>
+        </button>
+    </div>
+    <div class="flex-1">
+        <a class="link no-underline flex flex-row gap-1">
+            <img src="assets/images/logo.png" alt="ecom-tracker logo" loading="lazy" width="32" />
+            <span class="font-extrabold text-2xl">ecom-tracker</span>
+        </a>
+    </div>
+    <div class="flex-none">
+        <app-theme />
+    </div>
+</div>

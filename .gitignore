@@ -1,37 +1,34 @@
 # Node modules
-node_modules/
-
-# TypeScript build output
-dist/
-build/
+node_modules
+npm-debug.log
 
 # Prisma artifacts
 prisma/dev.db
 prisma/dev.db-journal
 
-# Logs
-*.log
-logs/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 # Environment files
 .env
 .env.*
+client/src/environments/
 
 # OS files
 .DS_Store
 Thumbs.db
 
 # Angular files
-.client/node_modules/
-.client/dist/
-.client/.angular/
+client/dist/
+client/.angular/
+
+# server ts compiled output
+server/dist/
 
 # Editor/IDE stuff
 .vscode/
-.idea/
 
 # Optional: compiled Prisma client if not using in source
 @prisma/
+
+
+# Ignore package-lock.json files in both client and server
+client/package-lock.json
+server/package-lock.json

@@ -1,0 +1,9 @@
+<div class="p-4 border-b border-base-300">
+    <a (click)="onClick()" class="cursor-pointer flex items-center gap-3 flex-row group">
+        <app-icons
+            [name]="'user-round'"
+            class="w- h-8 text-primary flex self-center items-center"
+        />
+        <span class="font-medium text-sm group-hover:font-bold">{{ user }}</span>
+    </a>
+</div>

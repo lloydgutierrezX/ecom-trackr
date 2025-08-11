@@ -1,0 +1,62 @@
+<div class="flex">
+    <div class="flex grow gap-2 items-center">
+        <span>Show</span>
+        <select
+            class="text-center bg-base-200 h-8"
+            [value]="pageSize"
+            (change)="onSizeChange($event)"
+        >
+            <option>1</option>
+            <option>5</option>
+            <option>10</option>
+            <option>20</option>
+            <option>50</option>
+        </select>
+
+        <span>item</span>
+    </div>
+    <div class="flex">
+        <div class="join">
+            <button
+                class="join-item btn btn-sm hover:bg-base-300 focus:ring rounded-r-sm"
+                data-tip="Go to first page"
+                [disabled]="isDisabled('first')"
+                (click)="firstPage()"
+            >
+                <app-icons [name]="'chevron-first'" />
+            </button>
+            <button
+                class="popover join-item btn btn-sm hover:bg-base-300 focus:ring"
+                data-tip="Go to previous page"
+                [disabled]="isDisabled('previous')"
+                (click)="previousPage()"
+            >
+                <app-icons [name]="'chevron-left'" />
+            </button>
+
+            <input
+                type="text"
+                class="join-item w-11 py-0 text-bold text-center text-sm leading-tight bg-base-200 text-base-content border-none"
+                disabled
+                [value]="currentPage"
+            />
+
+            <button
+                class="`popover join-item btn btn-sm hover:bg-base-300 focus:ring`"
+                data-tip="Go to next page"
+                [disabled]="isDisabled('next')"
+                (click)="nextPage()"
+            >
+                <app-icons [name]="'chevron-right'" />
+            </button>
+            <button
+                class="popover join-item btn btn-sm hover:bg-base-300 focus:ring"
+                data-tip="Go to last page"
+                [disabled]="isDisabled('last')"
+                (click)="lastPage()"
+            >
+                <app-icons [name]="'chevron-last'" />
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<app-navbar (toggle)="toggleDrawer()" />
+<div class="h-1 w-full absolute z-60">
+    @if (isLoading) {
+        <app-loader class="flex" />
+    }
+</div>
+<div class="flex">
+    <app-drawer
+        class="z-10"
+        [open]="isDrawerOpen"
+        (drawerStateChanged)="onDrawerStateChanged($event)"
+    />
+    <main class="flex-grow p-4">
+        <section class="max-w-screen-xl mx-auto">
+            <router-outlet></router-outlet>
+        </section>
+    </main>
+</div>
+
+<!-- modals -->
+<app-alert-modal modalId="alert-modal" />
+<app-confirm-modal modalId="confirm-modal" />
+<app-form-modal modalId="form-modal" />
