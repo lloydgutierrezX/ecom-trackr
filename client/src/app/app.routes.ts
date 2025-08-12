@@ -8,11 +8,13 @@ import { PaymentsComponent } from './pages/payments/payments.component';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { ClientsComponent } from './pages/clients/clients.component';
 import { ItemsComponent } from './pages/items/items.component';
+import { authGuard } from './guards/auth/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
