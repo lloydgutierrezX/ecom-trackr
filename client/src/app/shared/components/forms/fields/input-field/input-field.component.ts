@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { IFormFields } from '../../../../interfaces/form.interface';
 import { CommonModule } from '@angular/common';
@@ -17,11 +17,7 @@ import { BaseFormController } from '../../base-form-control';
     }
   ]
 })
-export class InputFieldComponent extends BaseFormController<string | number> implements OnChanges {
+export class InputFieldComponent extends BaseFormController<string | number> {
   @Input() formControl!: FormControl;
   @Input() config!: IFormFields;
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
-  }
 }

@@ -11,11 +11,12 @@ import { FormErrorComponent } from "./errors/form-error.component";
 import { mapValidators } from '../../utils/validators.util';
 import { FormService } from '../../services/form/form.service';
 import { Subject, takeUntil } from 'rxjs';
+import { EmailFieldComponent } from "./fields/email-field/email-field.component";
 
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
-  imports: [ReactiveFormsModule, InputFieldComponent, TelFieldComponent, FormErrorComponent],
+  imports: [ReactiveFormsModule, InputFieldComponent, TelFieldComponent, FormErrorComponent, EmailFieldComponent],
   templateUrl: './dynamic-form.component.html'
 })
 export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
@@ -70,7 +71,12 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['config'] && !changes['config'].firstChange) {
+    const config = changes['config'];
+    if (
+      config &&
+      (!config.firstChange && !config.currentValue.buildOnFirstChange) ||
+      (config.currentValue.buildFormOnFirstChange && config.firstChange)
+    ) {
       const { fields } = this.config;
       this.form = this.buildForm(fields);
     }

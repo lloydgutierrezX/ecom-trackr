@@ -1,1 +1,17 @@
-<p>login works!</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 w-screen h-screen">
+    <div class="grid place-items-center px-8 sm:px-16">
+        <div class="flex flex-col w-full gap-4">
+            <app-brand class="visible sm:hidden" />
+
+            <div class="hidden sm:block">
+                <h1 class="font-extrabold text-2xl">Sign in to your account</h1>
+                <p class="text-sm mt-2">Enter your credentials below to access your dashboard.</p>
+            </div>
+            <app-signin-form class="max-w-full"></app-signin-form>
+        </div>
+    </div>
+
+    <div class="hidden sm:grid place-items-center bg-gray-100">
+        <app-brand></app-brand>
+    </div>
+</div>

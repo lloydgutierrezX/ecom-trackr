@@ -9,6 +9,7 @@ export interface IFormConfig {
   moduleName: string;
   reset: boolean;
   fields: IFormFields[]; // form fields[]
+  buildFormOnFirstChange: boolean;
   actions: {
     value: string;
     label: string;

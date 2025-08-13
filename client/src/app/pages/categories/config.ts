@@ -25,11 +25,11 @@ export const tableConfig = (clientSrvc: ClientService): ITableConfig<IClient> =>
       searchable: false
     },
     {
-      label: 'Contact',
-      valueFn: (data: any) => mobilePhPipe.transform(data.contact),
+      label: 'Price',
+      valueFn: (data: { deletedAt: Date | null }) => data.deletedAt ? 'Not Active' : 'Active',
       style: 'width: 20%',
-      key: 'contact',
-      searchable: true
+      key: 'active',
+      searchable: false
     },
     {
       label: 'Date Created',

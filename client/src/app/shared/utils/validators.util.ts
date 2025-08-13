@@ -19,6 +19,10 @@ export const mapValidators = (validatorKeys: string[]): ValidatorFn[] => {
       return Validators.pattern(/^\+639\d{9}$/);
     }
 
+    else if (key === 'password') {
+      return Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/);
+    }
+
     else if (key.startsWith('minLength')) {
       const v = getValidatorValue(key);
       return v === -1 ? Validators.nullValidator : Validators.minLength(Number(v));

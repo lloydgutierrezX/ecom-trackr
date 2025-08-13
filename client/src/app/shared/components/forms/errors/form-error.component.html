@@ -1,4 +1,4 @@
-<div class="px-2 py-2 text-xs text-red-500">
+<div class="px-2 py-2 text-xs text-red-500 break-words w-full">
     @if (errors?.['required']) {
         <p>Must not be empty</p>
     }
@@ -13,7 +13,12 @@
 
     @if (errors?.['pattern']) {
         @if (checkMobilePattern(errors?.['pattern']?.['requiredPattern'])) {
-            <p>Must match a valid PH mobile number. Example: +63912345678</p>
+            <span>Must match a valid PH mobile number. Example: +63912345678</span>
+        } @else if (checkPasswordPattern(errors?.['pattern']?.['requiredPattern'])) {
+            <span>
+                Must be at least 8 characters long, include at least one lowercase letter, one
+                uppercase letter, and one digit.
+            </span>
         } @else {
             <p>Must match the given RegEx pattern {{ errors?.['pattern']?.['requiredPattern'] }}</p>
         }

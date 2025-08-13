@@ -17,16 +17,24 @@
                             [formControl]="getControl(formField.field.name)"
                             [config]="formField"
                             class="w-full"
-                        ></app-tel-field>
+                        />
                     }
                     @case ('number') {
                         <!-- <app-input-field></app-input-field> -->
                     }
                     @case ('email') {
-                        <!-- <app-input-field></app-input-field> -->
+                        <app-email-field
+                            [formControl]="getControl(formField.field.name)"
+                            [config]="formField"
+                            class="w-full"
+                        />
                     }
                     @case ('password') {
-                        <!-- <app-input-field></app-input-field> -->
+                        <app-input-field
+                            [formControl]="getControl(formField.field.name)"
+                            [config]="formField"
+                            class="w-full"
+                        />
                     }
 
                     <!-- @case ('url') {

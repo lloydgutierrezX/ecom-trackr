@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { TableComponent } from '../../shared/components/table/table.component';
 import { formConfig, tableConfig } from './config';
 import { ITableConfig } from '../../shared/interfaces/table-config.model';
@@ -8,8 +8,7 @@ import { SearchComponent } from "../../shared/components/search/search.component
 import { ListLayoutComponent } from '../../shared/components/list-layout/list-layout.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import { ModalService } from '../../shared/services/modal/modal.service';
-import { IFormConfig, IFormData } from '../../shared/interfaces/form.interface';
-import { DynamicFormComponent } from '../../shared/components/forms/dynamic-form.component';
+
 @Component({
   selector: 'app-clients',
   standalone: true,
