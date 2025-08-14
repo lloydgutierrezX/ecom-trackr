@@ -13,7 +13,7 @@
 
 <div class="flex flex-col gap-4">
     <div class="w-full mx-auto">
-        <app-dynamic-form [config]="signInFormConfig" [reset]="false" />
+        <app-dynamic-form #authForm [config]="signInFormConfig" [reset]="false" />
     </div>
 
     <div class="hidden justify-between sm:flex">
@@ -22,7 +22,11 @@
     </div>
 
     <div class="flex justify-end">
-        <button class="btn btn-md btn-primary w-full sm:w-32" (click)="onClick('login')">
+        <button
+            class="btn btn-md btn-primary w-full sm:w-32"
+            (click)="login()"
+            [disabled]="isButtonDisabled"
+        >
             Login
         </button>
     </div>
