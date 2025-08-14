@@ -1,13 +1,13 @@
 <ng-template #signupLink>
     <p class="text-sm text-gray-500">
         Don't have an account?
-        <a routerLink="/auth/register" class="text-blue-500">Register</a>
+        <a (click)="redirect('register')" class="text-blue-500">Register</a>
     </p>
 </ng-template>
 
 <ng-template #forgotPasswordLink>
     <p class="text-sm text-gray-500">
-        <a routerLink="/auth/forgot-password" class="text-blue-500">Forgot Password?</a>
+        <a (click)="redirect('forgot-password')" class="text-blue-500">Forgot Password?</a>
     </p>
 </ng-template>
 

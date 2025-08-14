@@ -4,9 +4,12 @@ import { IAuthResponse, ILoginAuthForm } from './auth-api.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthApiService {
+
+  loginEndpoint = 'api/auth/login';
+
   constructor(private httpSrvc: HttpClientService) { }
 
   loginAuth(authForm: ILoginAuthForm) {
-    return this.httpSrvc.post<IAuthResponse>('api/auth/login', authForm);
+    return this.httpSrvc.post<IAuthResponse>(this.loginEndpoint, authForm);
   }
 }

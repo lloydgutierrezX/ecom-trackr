@@ -7,7 +7,12 @@
                 <h1 class="font-extrabold text-2xl">Sign in to your account</h1>
                 <p class="text-sm mt-2">Enter your credentials below to access your dashboard.</p>
             </div>
-            <app-signin-form class="max-w-full" (submitForm)="submitForm($event)"></app-signin-form>
+            <app-signin-form
+                class="max-w-full"
+                (submitFormEmitter)="submitForm($event)"
+                (redirectEmitter)="redirect($event)"
+                [isLoading]="isLoading"
+            />
         </div>
     </div>
 

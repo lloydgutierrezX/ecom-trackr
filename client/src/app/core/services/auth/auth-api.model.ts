@@ -1,3 +1,5 @@
+export type IAuthAction =
+  'login' | 'logout' | 'register' | 'forgot-password' | 'reset-password' | 'redirect';
 export interface ILoginAuthForm {
   email: string;
   password: string;
