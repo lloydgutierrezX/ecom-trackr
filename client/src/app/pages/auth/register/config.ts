@@ -1,5 +1,4 @@
-import { IFormConfig } from "../../../../shared/interfaces/form.interface";
-
+import { IFormConfig } from "../../../shared/interfaces/form.interface";
 
 export const formConfig: IFormConfig = {
   name: 'auth-form',
@@ -29,6 +28,19 @@ export const formConfig: IFormConfig = {
         name: 'password',
         placeholder: '',
         validators: ['required', 'password'],
+        type: 'password',
+      }
+    },
+    {
+      type: 'password',
+      label: 'Confirm Password',
+      container: {
+        className: 'w-full'
+      },
+      field: {
+        name: 'confirm-password',
+        placeholder: '',
+        validators: ['required', 'password', 'match:password'],
         type: 'password',
       }
     },

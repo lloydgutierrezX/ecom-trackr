@@ -1,22 +1,68 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 w-screen h-screen">
-    <div class="grid place-items-center px-8 sm:px-16">
-        <div class="flex flex-col w-full gap-4">
-            <app-brand class="visible sm:hidden" />
+<ng-template #signupLink>
+    <p class="text-sm text-gray-500">
+        Don't have an account?
+        <a (click)="redirect('register')" class="text-blue-500">Register</a>
+    </p>
+</ng-template>
 
+<ng-template #forgotPasswordLink>
+    <p class="text-sm text-gray-500">
+        <a (click)="redirect('forgot-password')" class="text-blue-500">Forgot Password?</a>
+    </p>
+</ng-template>
+
+<app-auth-layout>
+    <div brand-mobile>
+        <app-brand class="visible sm:hidden" />
+    </div>
+
+    <div signin>
+        <div class="flex flex-col w-full gap-4">
             <div class="hidden sm:block">
                 <h1 class="font-extrabold text-2xl">Sign in to your account</h1>
                 <p class="text-sm mt-2">Enter your credentials below to access your dashboard.</p>
             </div>
-            <app-signin-form
-                class="max-w-full"
-                (submitFormEmitter)="submitForm($event)"
-                (redirectEmitter)="redirect($event)"
-                [isLoading]="isLoading"
-            />
+
+            <div class="flex flex-col gap-4">
+                <div class="w-full mx-auto">
+                    <app-dynamic-form #authForm [config]="signInFormConfig" [reset]="false" />
+
+                    @if (errorMessage.length > 0) {
+                        <app-alert [type]="'error'" [message]="errorMessage" />
+                    }
+                </div>
+
+                <div class="hidden justify-between sm:flex">
+                    <ng-container *ngTemplateOutlet="signupLink" />
+                    <ng-container *ngTemplateOutlet="forgotPasswordLink" />
+                </div>
+
+                <div class="flex justify-end">
+                    <button
+                        class="btn btn-md btn-primary w-full sm:w-32"
+                        (click)="login()"
+                        [disabled]="isDisabled"
+                    >
+                        Login
+                    </button>
+                </div>
+
+                <div class="flex sm:hidden">
+                    <div class="flex w-full justify-center mx-2">
+                        <ng-container *ngTemplateOutlet="forgotPasswordLink" />
+                    </div>
+
+                    <div class="absolute w-full bottom-0 left-0 mb-8 text-center">
+                        <ng-container *ngTemplateOutlet="signupLink" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="hidden sm:grid place-items-center bg-gray-100">
-        <app-brand></app-brand>
+    <div brand-desktop>
+        <div class="hidden sm:grid place-items-center bg-gray-100 h-full">
+            <app-brand></app-brand>
+        </div>
     </div>
-</div>
+</app-auth-layout>

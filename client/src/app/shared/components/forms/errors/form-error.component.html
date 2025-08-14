@@ -35,4 +35,8 @@
     @if (errors?.['invalid_type']) {
         <p>{{ errors?.['invalid_type'] || 'Server responds with invalid type.' }}</p>
     }
+
+    @if (errors?.['match']) {
+        <p>{{ errors?.['match']['message'] }}</p>
+    }
 </div>

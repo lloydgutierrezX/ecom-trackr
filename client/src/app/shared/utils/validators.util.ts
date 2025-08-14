@@ -1,9 +1,15 @@
 import { ValidatorFn, Validators } from "@angular/forms"
+import { matchValidator } from "../validators/match.validator";
 
 export const mapValidators = (validatorKeys: string[]): ValidatorFn[] => {
   return validatorKeys.map(key => {
 
-    if (key === 'required') {
+    if (key.startsWith('match:')) {
+      const fieldName = key.split(':')[1];
+      return matchValidator(fieldName);
+    }
+
+    else if (key === 'required') {
       return Validators.required;
     }
 

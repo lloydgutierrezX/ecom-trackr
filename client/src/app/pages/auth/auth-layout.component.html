@@ -1,0 +1,10 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 w-screen h-screen">
+    <div class="grid place-items-center px-8 sm:px-16">
+        <div class="flex flex-col w-full gap-4">
+            <ng-content select="[brand-mobile]" />
+            <ng-content select="[signin]" />
+        </div>
+    </div>
+
+    <ng-content select="[brand-desktop]" />
+</div>
