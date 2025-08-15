@@ -16,7 +16,7 @@
         <app-brand class="visible sm:hidden" />
     </div>
 
-    <div signin>
+    <div>
         <div class="flex flex-col w-full gap-4">
             <div class="hidden sm:block">
                 <h1 class="font-extrabold text-2xl">Sign in to your account</h1>
@@ -62,7 +62,11 @@
 
     <div brand-desktop>
         <div class="hidden sm:grid place-items-center bg-gray-100 h-full">
-            <app-brand></app-brand>
+            <app-brand>
+                <div subtitle>
+                    <p>Track your e-commerce performance effortlessly.</p>
+                </div>
+            </app-brand>
         </div>
     </div>
 </app-auth-layout>

@@ -28,7 +28,7 @@ export const formConfig: IFormConfig = {
       field: {
         name: 'password',
         placeholder: '',
-        validators: ['required', 'password'],
+        validators: ['required', 'password', 'match:password'],
         type: 'password',
       }
     },

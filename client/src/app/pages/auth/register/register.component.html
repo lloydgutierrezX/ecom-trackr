@@ -1,5 +1,58 @@
-<div class="flex flex-col gap-4">
-    <div class="w-full mx-auto">
-        <app-dynamic-form #authForm [config]="registerFormConfig" [reset]="false" />
+<app-auth-layout>
+    <div brand-mobile>
+        <app-brand class="visible sm:hidden" />
     </div>
-</div>
+
+    <div>
+        <div class="flex flex-col w-full gap-4">
+            <div class="hidden sm:block">
+                <h1 class="font-extrabold text-2xl">Create your account</h1>
+                <p class="text-sm mt-2">Fill in your details to get started.</p>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="w-full mx-auto">
+                    <app-dynamic-form #authForm [config]="registerFormConfig" [reset]="false" />
+
+                    @if (errorMessage.length > 0) {
+                        <app-alert [type]="'error'" [message]="errorMessage" />
+                    }
+                </div>
+
+                <div class="grid grid-flow-row sm:grid-flow-col gap-4">
+                    <div class="flex justify-center sm:justify-start">
+                        <span class="text-gray-500 text-sm">
+                            Already have an account?
+                            <a
+                                class="hover:underline hover:cursor-pointer text-blue-500"
+                                (click)="redirect('login')"
+                            >
+                                Login
+                            </a>
+                        </span>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button
+                            class="btn btn-md btn-primary w-full sm:w-32"
+                            (click)="register()"
+                            [disabled]="isDisabled"
+                        >
+                            Register
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div brand-desktop>
+        <div class="hidden sm:grid place-items-center bg-gray-100 h-full">
+            <app-brand>
+                <div subtitle class="text-base flex justify-center">
+                    <p>Start tracking your store’s growth today.</p>
+                </div>
+            </app-brand>
+        </div>
+    </div>
+</app-auth-layout>

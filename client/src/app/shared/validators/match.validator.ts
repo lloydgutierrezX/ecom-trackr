@@ -8,7 +8,7 @@ export const matchValidator = (matchTo: string): ValidatorFn => {
 
     const matchControl = control.parent.get(matchTo);
     return matchTo && control.value !== matchControl?.value ?
-      { mismatch: { message: `This field must match ${matchTo}` } } :
+      { mismatch: { message: `Must match ${matchTo}` } } :
       null;
   };
 }

@@ -4,7 +4,8 @@
         <span class="font-extrabold text-2xl">ecom-tracker</span>
     </div>
 
-    <div class="text-gray-500 text-sm mt-2 hidden sm:flex">
-        <p>Track your e-commerce performance effortlessly.</p>
+    <div class="flex-col text-gray-500 text-sm mt-2 hidden sm:flex">
+        <ng-content select="[subtitle]" />
+        <ng-content />
     </div>
 </div>

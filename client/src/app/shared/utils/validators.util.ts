@@ -5,7 +5,9 @@ export const mapValidators = (validatorKeys: string[]): ValidatorFn[] => {
   return validatorKeys.map(key => {
 
     if (key.startsWith('match:')) {
+      console.log(key);
       const fieldName = key.split(':')[1];
+      console.log(fieldName);
       return matchValidator(fieldName);
     }
 
