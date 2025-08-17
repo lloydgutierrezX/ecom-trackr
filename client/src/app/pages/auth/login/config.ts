@@ -13,6 +13,7 @@ export const formConfig: IFormConfig = {
       container: {
         className: 'w-full'
       },
+      icon: 'mail',
       field: {
         name: 'email',
         validators: ['required', 'email'],
@@ -22,6 +23,7 @@ export const formConfig: IFormConfig = {
     {
       type: 'password',
       label: 'Password',
+      icon: 'key-round',
       container: {
         className: 'w-full'
       },

@@ -1,10 +1,11 @@
 import express from 'express';
-import { registerUser, loginUser } from '../controllers/authController';
+import { registerUser, loginUser, verifyEmail } from '../controllers/authController';
 import { authencicateToken } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
 router.post('/login', loginUser);
+router.post('/verify-email', verifyEmail);
 router.post('/register', registerUser);
 
 router.get('/test', authencicateToken, (req, res) => {

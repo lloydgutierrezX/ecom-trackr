@@ -10,9 +10,9 @@ import {
 
 const router = Router();
 
-router.get("/", authencicateToken, getAllClients);
-router.post("/", authencicateToken, createClient);
-router.put("/:id", authencicateToken, updateClient);
-router.delete("/:id", authencicateToken, deleteClient);
+router.get("/", getAllClients);
+router.post("/", createClient);
+router.put("/:id", updateClient);
+router.delete("/:id", deleteClient);
 
 export default router;

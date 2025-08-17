@@ -11,6 +11,11 @@ export interface IRegisterAuthForm {
   confirmPassword: string;
 }
 
+export interface IAuthRegisterResponse {
+  message: string;
+  userId: string;
+}
+
 export interface IAuthResponse {
   token: string;
   user: {

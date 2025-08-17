@@ -1,1 +1,6 @@
-<p>toggle-field works!</p>
+<div class="form-control flex flex-row gap-4">
+    @if (label) {
+        <span>{{ label }}</span>
+    }
+    <input type="checkbox" [checked]="checked" class="checkbox" />
+</div>

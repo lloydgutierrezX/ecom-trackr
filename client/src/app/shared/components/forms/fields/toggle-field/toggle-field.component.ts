@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-toggle-field',
@@ -7,5 +7,7 @@ import { Component } from '@angular/core';
   templateUrl: './toggle-field.component.html'
 })
 export class ToggleFieldComponent {
-
+  @Input() checked = false;
+  @Input() label = '';
+  @Output() toggleState = new EventEmitter<boolean>();
 }

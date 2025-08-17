@@ -14,7 +14,7 @@ export interface IFormConfig {
     value: string;
     label: string;
     className?: string;
-  }[]
+  }[];
 }
 
 export type IFormFields =
@@ -39,6 +39,7 @@ interface IDefaultField {
 interface IBaseFormField {
   label: string;
   hint?: string;
+  icon?: string;
   container?: {
     className?: string;
     cssStyle?: string;

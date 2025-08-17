@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { BrandComponent } from '../../../shared/components/brand/brand.component';
-import { IAuthAction, ILoginAuthForm } from '../../../core/services/auth/auth-api.model';
+import { IAuthAction, ILoginAuthForm, IRegisterAuthForm } from '../../../core/services/auth/auth-api.model';
 import { AuthApiService } from '../../../core/services/auth/auth-api.service';
 import { catchError, finalize, tap } from 'rxjs';
 import { ToastService } from '../../../shared/services/toast/toast.service';
@@ -57,7 +57,7 @@ export class LoginComponent {
 
     this.isDisabled = true;
     this.errorMessage = '';
-    const authFormData: ILoginAuthForm = this.authForm.form.value as ILoginAuthForm;
+    const authFormData: IRegisterAuthForm = this.authForm.form.value as IRegisterAuthForm;
 
     this.authApiSrvc.loginAuth(authFormData)
       .pipe(
