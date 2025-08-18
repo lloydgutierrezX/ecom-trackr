@@ -4,8 +4,8 @@ import { authencicateToken } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
+router.get('/verify-email', verifyEmail);
 router.post('/login', loginUser);
-router.post('/verify-email', verifyEmail);
 router.post('/register', registerUser);
 
 router.get('/test', authencicateToken, (req, res) => {

@@ -9,6 +9,7 @@ import { CategoriesComponent } from './pages/categories/categories.component';
 import { ClientsComponent } from './pages/clients/clients.component';
 import { ItemsComponent } from './pages/items/items.component';
 import { authGuard } from './guards/auth/auth.guard';
+import { VerifyComponent } from './pages/auth/verify/verify.component';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,10 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent
+  },
+  {
+    path: 'verify',
+    component: VerifyComponent
   },
   {
     path: '**',

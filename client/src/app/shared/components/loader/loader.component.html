@@ -1,1 +1,8 @@
-<progress class="progress progress-primary w-full h-1 z-60"></progress>
+@switch (type) {
+    @case ('spinner') {
+        <span class="loading loading-spinner loading-lg"></span>
+    }
+    @default {
+        <progress class="progress progress-primary w-full h-1 z-60"></progress>
+    }
+}

@@ -15,26 +15,30 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
   logger.traceIn("Verify Email");
 
   try {
-    const { token, email } = req.query;
-
-    logger.info("Validating user and email...");
-    if (!token || !email) {
-      logger.error('Missing token or email.');
+    const { token } = req.query;
+    logger.info("Validating token");
+    if (!token) {
+      logger.error('Missing token.');
       res.status(400).json({ message: 'Missing token or email.' });
       return;
     }
 
-    const user = await prisma.user.findUnique({ where: { email: email.toString() } });
-
-    logger.info("Validating email verification");
-    if (!user || !user.verificationToken) {
+    logger.info("Getting list of users with verification token");
+    const user = await prisma.user.findFirst({ where: { verificationToken: { not: null } } });
+    if (!user) {
       logger.error('Invalid verification request.');
-      res.status(400).json({ message: 'Invalid verification request.' });
+      res.status(400).json({ message: 'Invalid verification request' });
       return;
     }
 
-    logger.info("Validating token...");
-    const isMatch = await bcrypt.compare(token.toString(), user?.verificationToken ?? '');
+    logger.info("Comparing user.verificationToken to token");
+    const isMatch = await bcrypt.compare(
+      token.toString(),
+      user.verificationToken ?? ""
+    );
+    console.log(token)
+    console.log(token.toString(), user.verificationToken, isMatch)
+
     if (!isMatch) {
       logger.error('Invalid or expired token.');
       res.status(400).json({ message: 'Invalid or expired token.' });
@@ -42,7 +46,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
     }
 
     await prisma.user.update({
-      where: { email: email.toString() },
+      where: { id: user.id },
       data: {
         isVerified: true,
         verificationToken: null
@@ -81,7 +85,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const rawToken = crypto.randomBytes(32).toString();
+    const rawToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = await bcrypt.hash(rawToken, 10);
 
     logger.info("Creating new user in the database...");
@@ -95,7 +99,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       },
     });
 
-    const verificationLink = `${process.env.FRONTEND_URL}/verify?token=${hashedToken}`
+    const verificationLink = `${process.env.FRONTEND_URL}/verify?token=${rawToken}`
 
     await sendEmail({
       to: email,

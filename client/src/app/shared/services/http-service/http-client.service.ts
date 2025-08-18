@@ -9,8 +9,8 @@ export class HttpClientService {
 
   constructor(private http: HttpClient) { }
 
-  get<T>(url: string): Observable<T> {
-    return this.http.get<T>(url);
+  get<T>(url: string, options?: any): Observable<T> {
+    return this.http.get<T>(url, options as Record<string, any>);
   }
 
   post<T>(url: string, data: any): Observable<T> {

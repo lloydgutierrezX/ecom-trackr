@@ -11,6 +11,14 @@ export interface IRegisterAuthForm {
   confirmPassword: string;
 }
 
+export interface IVerifyEmail {
+  token: string;
+}
+
+export interface IVerifyEmailResponse {
+  message: string;
+}
+
 export interface IAuthRegisterResponse {
   message: string;
   userId: string;

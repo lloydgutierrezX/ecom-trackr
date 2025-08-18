@@ -7,4 +7,5 @@ import { Component, Input } from '@angular/core';
   templateUrl: './loader.component.html'
 })
 export class LoaderComponent {
+  @Input() type: 'spinner' | 'progress' = 'progress';
 }
