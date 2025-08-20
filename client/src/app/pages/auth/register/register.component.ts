@@ -19,6 +19,7 @@ export class RegisterComponent {
 
   @ViewChild('authForm') authForm!: DynamicFormComponent;
 
+  resetFields = false;
   registerFormConfig = formConfig;
   errorMessage = '';
   successMessage = '';
@@ -48,6 +49,7 @@ export class RegisterComponent {
     }
 
     this.isDisabled = true;
+    this.resetFields = false;
     this.errorMessage = '';
     this.successMessage = '';
     const authFormData: IRegisterAuthForm = this.authForm.form.value as IRegisterAuthForm;
@@ -56,6 +58,7 @@ export class RegisterComponent {
       .pipe(
         tap(response => {
           console.log('Login successful:', response);
+          this.resetFields = true;
           this.successMessage = `Account created successfully! Check your email to verify.`;
         }),
         catchError(error => {

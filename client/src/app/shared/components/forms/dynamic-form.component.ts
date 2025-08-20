@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
 import { IFormConfig, IFormData, IFormFields } from '../../interfaces/form.interface';
 import { FormGroup, FormBuilder, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { InputFieldComponent } from './fields/input-field/input-field.component';
@@ -71,23 +71,47 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const config = changes['config'];
+    if (changes['config']) {
+      this.onConfigChanges(changes['config']);
+    }
+
+    if (changes['reset']) {
+      this.onResetChanges(changes['reset']);
+    }
+
+    if (changes['data']) {
+      this.onDataChanges(changes['data']);
+    }
+  }
+
+  onConfigChanges(config: SimpleChange) {
     if (
-      config &&
-      (!config.firstChange && !config.currentValue.buildOnFirstChange) ||
-      (config.currentValue.buildFormOnFirstChange && config.firstChange)
+      !config ||
+      (config &&
+        (config.firstChange || config.currentValue.buildOnFirstChange) &&
+        (!config.firstChange || !config.currentValue.buildFormOnFirstChange))
     ) {
-      const { fields } = this.config;
-      this.form = this.buildForm(fields);
+      return;
     }
 
-    if (changes['reset'] && changes['reset'].currentValue === true) {
-      this.resetForm();
+    const { fields } = this.config;
+    this.form = this.buildForm(fields);
+  }
+
+  onResetChanges(reset: SimpleChange) {
+    if (!reset || reset.currentValue === false) {
+      return;
     }
 
-    if (changes['data'] && !changes['data'].firstChange) {
-      this.form.patchValue(changes['data'].currentValue);
+    this.resetForm();
+  }
+
+  onDataChanges(data: SimpleChange) {
+    if (!data || !data.firstChange) {
+      return;
     }
+
+    this.form.patchValue(data.currentValue);
   }
 
   ngOnDestroy(): void {

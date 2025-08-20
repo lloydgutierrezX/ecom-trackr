@@ -105,7 +105,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       to: email,
       subject: "Verify Your Account",
       template: "verifyEmail",
-      data: { verificationLink }
+      data: { name, verificationLink }
     })
 
     logger.info(`User created successfullywith ID: ${newUser.id}`);

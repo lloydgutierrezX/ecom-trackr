@@ -12,7 +12,11 @@
 
             <div class="flex flex-col gap-4">
                 <div class="w-full mx-auto">
-                    <app-dynamic-form #authForm [config]="registerFormConfig" [reset]="false" />
+                    <app-dynamic-form
+                        #authForm
+                        [config]="registerFormConfig"
+                        [reset]="resetFields"
+                    />
 
                     @if (errorMessage.length > 0) {
                         <app-alert [type]="'error'" [message]="errorMessage" />
