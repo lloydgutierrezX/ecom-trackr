@@ -1,16 +1,16 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BrandComponent } from '../../../shared/components/brand/brand.component';
-import { IAuthAction, ILoginAuthForm, IRegisterAuthForm } from '../../../core/services/auth/auth-api.model';
+import { IAuthAction, IRegisterAuthForm } from '../../../core/services/auth/auth-api.model';
 import { AuthApiService } from '../../../core/services/auth/auth-api.service';
 import { catchError, finalize, tap } from 'rxjs';
-import { ToastService } from '../../../shared/services/toast/toast.service';
 import { Router } from '@angular/router';
 import { AuthLayoutComponent } from "../auth-layout.component";
 import { DynamicFormComponent } from '../../../shared/components/forms/dynamic-form.component';
 import { NgTemplateOutlet } from '@angular/common';
 import { IFormConfig } from '../../../shared/interfaces/form.interface';
-import { formConfig } from './config';
+import { formConfig, forgotPasswordActionConfig, forgotPasswordFormConfig } from './config';
 import { AlertComponent } from "../../../shared/components/alert/alert.component";
+import { ModalService } from '../../../shared/services/modal/modal.service';
 
 @Component({
   selector: 'app-login',
@@ -24,12 +24,17 @@ import { AlertComponent } from "../../../shared/components/alert/alert.component
   ],
   templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   @ViewChild('authForm') authForm!: DynamicFormComponent;
 
+  forgotPasswordActionConfig = forgotPasswordActionConfig;
+  forgotPasswordFormConfig = forgotPasswordFormConfig;
+
   signInFormConfig: IFormConfig = formConfig;
-  errorMessage: string = '';
+
+  successMessage = '';
+  errorMessage = '';
 
   private _isLoading = false;
   get isDisabled() {
@@ -46,8 +51,23 @@ export class LoginComponent {
 
   constructor(
     private authApiSrvc: AuthApiService,
+    private modalSrvc: ModalService,
     private router: Router
   ) { }
+
+  ngOnInit() {
+    this.authApiSrvc.forgotPasswordResult$.subscribe(result => {
+      if (!result) {
+        return;
+      }
+
+      if (result?.success) {
+        this.successMessage = result?.message ?? 'Reset link sent.';
+      } else {
+        this.errorMessage = result?.message ?? 'Failed to send reset link';
+      }
+    });
+  }
 
   login(): void {
 
@@ -79,6 +99,11 @@ export class LoginComponent {
   }
 
   redirect(path: IAuthAction): void {
+
+    if (this._isLoading) {
+      return;
+    }
+
     if (path !== 'register' && path !== 'forgot-password') {
       return;
     }
@@ -88,5 +113,17 @@ export class LoginComponent {
     });
 
     this.router.navigateByUrl(urlTree);
+  }
+
+  forgotPassword() {
+    if (this._isLoading) {
+      return;
+    }
+
+    this.modalSrvc.open('form-modal', {
+      handler: this.forgotPasswordActionConfig.forgot_password?.handler,
+      formConfig: this.forgotPasswordFormConfig,
+      type: 'forgot_password'
+    });
   }
 }

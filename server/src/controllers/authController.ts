@@ -2,14 +2,123 @@ import { Request, Response } from "express";
 import { prisma } from "../prisma/client";
 
 import bcrypt from "bcryptjs";
-import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import { logger } from "../utils/utils";
 import { registerSchema } from "../validations/registerSchema";
 import z from "zod";
 import { sendEmail } from "../services/emailService";
+import { generateToken } from "../utils/token";
+import { addHours } from "../utils/date";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+
+  logger.traceIn('Forgot Password');
+  const { email } = req.body;
+  try {
+    const user = await prisma.user.findUnique({ where: { email } })
+
+    if (!user) {
+      logger.error(`No user found in this email: ${email}`);
+      res.status(400).json({ message: "User not found with this email." });
+      return;
+    }
+
+    const { rawToken, hashedToken } = await generateToken();
+
+    await prisma.user.update({
+      where: { email },
+      data: {
+        resetPasswordToken: hashedToken,
+        resetPasswordExpires: addHours(1)
+      },
+    });
+
+    const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${rawToken}`;
+
+    const info = await sendEmail({
+      to: email,
+      subject: "Reset Your Password",
+      template: "resetPassword",
+      data: { name: user.name, resetLink }
+    });
+
+    logger.info(`Reset password link has been sent with ID: ${info.id}`);
+    res.status(201).json({ message: "Password reset link sent to your email" });
+    return;
+
+  } catch (error) {
+    logger.error(`Error in forgot password: ${JSON.stringify(error)}`);
+    res.status(500).json({ message: "Server error" });
+  } finally {
+    logger.traceOut('Forgot Password');
+  }
+}
+
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  logger.traceIn('Reset Password');
+
+  try {
+
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      logger.error('Token and password is required');
+      res.status(400).json({ message: 'Token and password are required' });
+      return;
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: { not: null },
+        resetPasswordExpires: { gt: new Date() }
+      }
+    });
+
+    console.log(token, user)
+
+    if (!user) {
+      logger.error('Invalid or expired token.');
+      res.status(400).json({ message: 'Invalid or expired token.' });
+      return;
+    }
+
+    logger.info("Comparing user.resetPasswordToken to token");
+    const isMatch = await bcrypt.compare(
+      token.toString(),
+      user.resetPasswordToken ?? ""
+    );
+
+    if (!isMatch) {
+      logger.error('Invalid or expired token.');
+      res.status(400).json({ message: 'Invalid or expired token.' });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordExpires: null,
+        resetPasswordToken: null
+      }
+    });
+
+    logger.info('Password has been reset successfully.');
+    res.json({ message: 'Password has been reset successfully.' });
+    return;
+
+  } catch (error) {
+    logger.error(`Error in reset password: ${JSON.stringify(error)}`);
+    res.status(500).json({ message: "Server error" });
+    return;
+  } finally {
+    logger.traceOut('Reset Password');
+  }
+}
 
 export const verifyEmail = async (req: Request, res: Response): Promise<void> => {
   logger.traceIn("Verify Email");
@@ -36,8 +145,6 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
       token.toString(),
       user.verificationToken ?? ""
     );
-    console.log(token)
-    console.log(token.toString(), user.verificationToken, isMatch)
 
     if (!isMatch) {
       logger.error('Invalid or expired token.');
@@ -57,7 +164,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
     return;
 
   } catch (error) {
-    logger.error(`Error verifying email: ${JSON.stringify(error)}`);
+    logger.error(`Error in verifying email: ${JSON.stringify(error)}`);
     res.status(500).json({ message: "Server error" });
     return;
   } finally {
@@ -72,8 +179,8 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   try {
 
     const parsed = registerSchema.parse(req.body);
+    const { name, email, password } = parsed;
 
-    const { name, email, password } = req.body;
     logger.info("Validating user input...");
     const existingUser = await prisma.user.findUnique({ where: { email } });
 
@@ -84,9 +191,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    const rawToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = await bcrypt.hash(rawToken, 10);
+    const { rawToken, hashedToken } = await generateToken();
 
     logger.info("Creating new user in the database...");
     const newUser = await prisma.user.create({
@@ -95,11 +200,11 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         email,
         password: hashedPassword,
         verificationToken: hashedToken,
-        verificationTokenExpires: new Date(Date.now() + 1000 * 60 * 60)
+        verificationTokenExpires: addHours(1)
       },
     });
 
-    const verificationLink = `${process.env.FRONTEND_URL}/verify?token=${rawToken}`
+    const verificationLink = `${process.env.CLIENT_URL}/verify?token=${rawToken}`
 
     await sendEmail({
       to: email,
@@ -109,7 +214,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     })
 
     logger.info(`User created successfullywith ID: ${newUser.id}`);
-    res.status(201).json({ message: "User registered successfully, check your email to verify.", userId: newUser.id });
+    res.status(201).json({ message: "User registered successfully, check your email to verify." });
     return;
   } catch (error) {
 

@@ -16,9 +16,9 @@ interface ITableActionConfig<T = any> {
   tooltip?: string;
 }
 
-type IActionType = 'load' | 'create' | 'update' | 'delete' | 'search';
+export type IActionType = 'load' | 'create' | 'update' | 'delete' | 'search' | 'forgot_password';
 
-type ITableActions<T = any> = {
+export type ITableActions<T = any> = {
   [x in IActionType]?: ITableActionConfig<T>;
 };
 

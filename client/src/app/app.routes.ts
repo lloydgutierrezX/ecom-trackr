@@ -11,6 +11,9 @@ import { ItemsComponent } from './pages/items/items.component';
 import { authGuard } from './guards/auth/auth.guard';
 import { VerifyComponent } from './pages/auth/verify/verify.component';
 
+import { tokenGuard } from './guards/token/token.guard';
+import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -58,7 +61,13 @@ export const routes: Routes = [
   },
   {
     path: 'verify',
+    canActivate: [tokenGuard],
     component: VerifyComponent
+  },
+  {
+    path: 'reset-password',
+    canActivate: [tokenGuard],
+    component: ResetPasswordComponent
   },
   {
     path: '**',

@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IRegisterAuthForm } from '../../../core/services/auth/auth-api.model';
 import { AuthApiService } from '../../../core/services/auth/auth-api.service';
 import { catchError, finalize, tap } from 'rxjs';
+import { dedupeReturnUrl } from '../../../shared/utils/url.util';
 
 @Component({
   selector: 'app-register',
@@ -69,25 +70,11 @@ export class RegisterComponent {
         finalize(() => {
           this.isDisabled = false;
         })
-      ).subscribe(() => { });
+      ).subscribe();
   }
 
   redirect(path: 'login'): void {
-    if (path !== 'login') {
-      return;
-    }
-
-    let returnUrl = '/login';
-    const returnUrlQP = this.activedRoute.snapshot.queryParamMap.get('returnUrl');
-    if (returnUrlQP) {
-      const split = returnUrlQP.split('returnUrl=');
-      returnUrl = split[0].startsWith('/login') ? split[1] : returnUrl;
-    }
-
-    const urlTree = this.router.createUrlTree([path], {
-      queryParams: { returnUrl }
-    });
-
-    this.router.navigateByUrl(urlTree);
+    const url = dedupeReturnUrl(this.activedRoute, this.router, path);
+    this.router.navigateByUrl(url);
   }
 }

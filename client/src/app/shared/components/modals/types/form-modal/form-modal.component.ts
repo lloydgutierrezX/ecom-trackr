@@ -3,8 +3,10 @@ import { ModalService } from '../../../../services/modal/modal.service';
 import { BaseModalComponent } from '../../base-modal.component';
 import { DynamicFormComponent } from "../../../forms/dynamic-form.component";
 import { IFormConfig, IFormData } from '../../../../interfaces/form.interface';
-import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { finalize, Observable, Subject, take, takeUntil } from 'rxjs';
 import { FormService } from '../../../../services/form/form.service';
+import { IActionType } from '../../../../interfaces/table-config.model';
+import { AuthApiService } from '../../../../../core/services/auth/auth-api.service';
 
 @Component({
   selector: 'app-form-modal',
@@ -25,11 +27,25 @@ export class FormModalComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  title: string = '';
+  private type!: IActionType;
+  get title() {
+    if (this.type === 'forgot_password') {
+      return 'Forgot Password';
+    }
+
+    return (this.formData ? 'Update' : 'Add') + this.config?.moduleName;
+  }
+
+  get isDisable(): boolean {
+    return !this.formComponent.formGroup.valid || this.isLoading;
+  }
+
+  isLoading = false;
 
   constructor(
     private modalSrvc: ModalService,
-    private formSrvc: FormService
+    private formSrvc: FormService,
+    private authApiSrvc: AuthApiService
   ) { }
 
   ngOnInit(): void {
@@ -40,14 +56,13 @@ export class FormModalComponent implements OnInit, OnDestroy {
           return;
         }
 
-        const { formConfig, handler } = config;
+        const { formConfig, handler, type } = config;
 
         this.handler = handler;
         this.config = formConfig;
         this.formData = data ?? undefined;
         this.resetForm = true;
-
-        this.title = (data ? 'Update ' : 'Add ') + this.config.moduleName;
+        this.type = type;
       });
 
     this.modalSrvc.onClose$
@@ -66,6 +81,7 @@ export class FormModalComponent implements OnInit, OnDestroy {
     }
 
     if (type === 'save') {
+      this.isLoading = true;
       const formGroup = this.formComponent?.formGroup;
       if (!formGroup || formGroup.invalid) {
         formGroup?.markAllAsTouched();
@@ -78,8 +94,25 @@ export class FormModalComponent implements OnInit, OnDestroy {
         .subscribe((result) => {
           if (result && !result['error']) {
             this.modalSrvc.close(this.modalId);
+            this.isLoading = false;
           }
         });
+    }
+
+    if (type === 'forgot-password') {
+      const email = this.formComponent.formData['email'] as string;
+      if (!email) {
+        console.error('email is required');
+        return;
+      }
+      this.isLoading = true;
+      this.authApiSrvc.forgotPassword(email)
+        .pipe(
+          finalize(() => {
+            this.isLoading = false;
+            this.modalSrvc.close(this.modalId);
+          })
+        ).subscribe();
     }
   }
 }

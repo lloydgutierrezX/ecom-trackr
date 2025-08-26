@@ -88,8 +88,9 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     if (
       !config ||
       (config &&
-        (config.firstChange || config.currentValue.buildOnFirstChange) &&
-        (!config.firstChange || !config.currentValue.buildFormOnFirstChange))
+        config.currentValue === undefined ||
+        (config.firstChange || config?.currentValue?.buildOnFirstChange) &&
+        (!config.firstChange || !config?.currentValue?.buildFormOnFirstChange))
     ) {
       return;
     }
@@ -107,7 +108,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onDataChanges(data: SimpleChange) {
-    if (!data || !data.firstChange) {
+    if (!data || !data.firstChange || !this.form) {
       return;
     }
 
