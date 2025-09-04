@@ -10,6 +10,7 @@
         @if (config && config.actions) {
             @for (action of config.actions; track $index) {
                 <button
+                    type="submit"
                     [disabled]="isDisable"
                     [class]="'btn ' + action.className"
                     (click)="onClick(action.value)"

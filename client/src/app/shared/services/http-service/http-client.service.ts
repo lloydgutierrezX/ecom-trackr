@@ -1,6 +1,15 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, retry } from 'rxjs';
+
+interface IHttpRequestOptions {
+  headers?: HttpHeaders | { [header: string]: string | string[] };
+  params?: HttpParams | { [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean> };
+  reportProgress?: boolean;
+  responseType?: 'json' | 'blob';
+  withCredentials?: boolean;
+  context?: HttpContext;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +22,11 @@ export class HttpClientService {
     return this.http.get<T>(url, options as Record<string, any>);
   }
 
-  post<T>(url: string, data: any): Observable<T> {
-    return this.http.post<T>(url, data);
+  post<T>(url: string, data?: any, options?: IHttpRequestOptions): Observable<T> {
+    return this.http.post<T>(url, data, {
+      ...options,
+      responseType: (options?.responseType || 'json') as any
+    });
   }
 
   put<T>(url: string, data: any): Observable<T> {

@@ -8,13 +8,16 @@ import { registerSchema } from "../validations/registerSchema";
 import z from "zod";
 import { sendEmail } from "../services/emailService";
 import { generateToken } from "../utils/token";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt";;
 import { addHours } from "../utils/date";
+import { getClearCookieOptions, getCookieOptions } from "../utils/cookie";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET as string;
+const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
 
 export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
 
-  logger.traceIn('Forgot Password');
+  logger.traceIn("Forgot Password");
   const { email } = req.body;
   try {
     const user = await prisma.user.findUnique({ where: { email } })
@@ -52,20 +55,20 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
     logger.error(`Error in forgot password: ${JSON.stringify(error)}`);
     res.status(500).json({ message: "Server error" });
   } finally {
-    logger.traceOut('Forgot Password');
+    logger.traceOut("Forgot Password");
   }
 }
 
 export const resetPassword = async (req: Request, res: Response): Promise<void> => {
-  logger.traceIn('Reset Password');
+  logger.traceIn("Reset Password");
 
   try {
 
     const { token, password } = req.body;
 
     if (!token || !password) {
-      logger.error('Token and password is required');
-      res.status(400).json({ message: 'Token and password are required' });
+      logger.error("Token and password is required");
+      res.status(400).json({ message: "Token and password are required" });
       return;
     }
 
@@ -76,11 +79,9 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
       }
     });
 
-    console.log(token, user)
-
     if (!user) {
-      logger.error('Invalid or expired token.');
-      res.status(400).json({ message: 'Invalid or expired token.' });
+      logger.error("Invalid or expired token.");
+      res.status(400).json({ message: "Invalid or expired token." });
       return;
     }
 
@@ -91,8 +92,8 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     );
 
     if (!isMatch) {
-      logger.error('Invalid or expired token.');
-      res.status(400).json({ message: 'Invalid or expired token.' });
+      logger.error("Invalid or expired token.");
+      res.status(400).json({ message: "Invalid or expired token." });
       return;
     }
 
@@ -107,8 +108,8 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
       }
     });
 
-    logger.info('Password has been reset successfully.');
-    res.json({ message: 'Password has been reset successfully.' });
+    logger.info("Password has been reset successfully.");
+    res.json({ message: "Password has been reset successfully." });
     return;
 
   } catch (error) {
@@ -116,7 +117,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ message: "Server error" });
     return;
   } finally {
-    logger.traceOut('Reset Password');
+    logger.traceOut("Reset Password");
   }
 }
 
@@ -127,16 +128,16 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
     const { token } = req.query;
     logger.info("Validating token");
     if (!token) {
-      logger.error('Missing token.');
-      res.status(400).json({ message: 'Missing token or email.' });
+      logger.error("Missing token.");
+      res.status(400).json({ message: "Missing token or email." });
       return;
     }
 
     logger.info("Getting list of users with verification token");
     const user = await prisma.user.findFirst({ where: { verificationToken: { not: null } } });
     if (!user) {
-      logger.error('Invalid verification request.');
-      res.status(400).json({ message: 'Invalid verification request' });
+      logger.error("Invalid verification request.");
+      res.status(400).json({ message: "Invalid verification request" });
       return;
     }
 
@@ -147,8 +148,8 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
     );
 
     if (!isMatch) {
-      logger.error('Invalid or expired token.');
-      res.status(400).json({ message: 'Invalid or expired token.' });
+      logger.error("Invalid or expired token.");
+      res.status(400).json({ message: "Invalid or expired token." });
       return;
     }
 
@@ -160,7 +161,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
       }
     });
 
-    res.status(200).json({ message: 'Email verified successfully.' });
+    res.status(200).json({ message: "Email verified successfully." });
     return;
 
   } catch (error) {
@@ -220,7 +221,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
     if (error instanceof z.ZodError) {
       logger.error(`Error on Zod validation: ${JSON.stringify(error)}`);
-      res.status(400).json({ message: 'Validation Error', errors: error.errors });
+      res.status(400).json({ message: "Validation Error", errors: error.errors });
       return;
     }
 
@@ -255,10 +256,21 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1d" });
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+
+    res.cookie("refreshToken", refreshToken, getCookieOptions(req));
 
     logger.info("User authenticated successfully, generating token...");
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({
+      message: "Login successful",
+      accessToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+    });
     return;
   } catch (error) {
     logger.error(`Error logging in user: ${JSON.stringify(error)}`);
@@ -266,5 +278,56 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     return;
   } finally {
     logger.traceOut("Login User");
+  }
+}
+
+export const refreshAccessToken = async (req: Request, res: Response): Promise<void> => {
+  logger.traceIn("Refresh Access Token");
+
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      res.status(401).json({ message: "Refresh token required" });
+      return;
+    }
+
+    jwt.verify(refreshToken, REFRESH_SECRET, (err: any, decoded: any) => {
+      if (err) {
+
+        if (err.name === "TokenExpiredError") {
+          logger.error("Token expired");
+          res.status(401).json({ message: "Token expired", code: "TOKEN_EXPIRED" });
+          return;
+        }
+
+        logger.error("Invalid refresh token");
+        res.status(403).json({ message: "Invalid refresh token" });
+        return;
+      }
+
+      const accessToken = generateAccessToken(decoded.userId);
+      logger.info('accessToken: ' + accessToken);
+      res.status(200).json({ accessToken });
+    });
+  } catch (error) {
+    logger.error(`Error refreshing token: ${JSON.stringify(error)}`);
+    res.status(500).json({ message: "Internal server error" });
+  } finally {
+    logger.traceOut("Refresh Access Token");
+  }
+}
+
+export const logoutUser = async (req: Request, res: Response): Promise<void> => {
+  logger.traceIn("Logout User");
+
+  try {
+    console.log(getClearCookieOptions(req))
+    res.clearCookie("refreshToken", getClearCookieOptions(req));
+    res.status(200).json({ message: "Logged out successfully" });
+    return;
+  } catch (error) {
+    logger.error(`Error logging out user: ${JSON.stringify(error)}`);
+    res.status(500).json({ message: "Internal server error" });
+    return;
   }
 }

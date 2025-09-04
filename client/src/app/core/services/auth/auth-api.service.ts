@@ -13,7 +13,7 @@ export class AuthApiService {
 
   loginAuth(payload: ILoginAuthForm) {
     const endpoint = 'api/auth/login';
-    return this.httpSrvc.post<IAuthResponse>(endpoint, payload);
+    return this.httpSrvc.post<IAuthResponse>(endpoint, payload, { withCredentials: true });
   }
 
   registerUser(payload: IRegisterAuthForm) {
@@ -41,5 +41,13 @@ export class AuthApiService {
 
   resetPassword(formData: { token: string, password: string }) {
     return this.httpSrvc.post("api/auth/reset-password", { ...formData });
+  }
+
+  refreshAccessToken() {
+    return this.httpSrvc.post<{ accessToken: string }>('api/auth/refresh', {}, { withCredentials: true });
+  }
+
+  logoutUser() {
+    return this.httpSrvc.post<{ message: string }>('api/auth/logout')
   }
 }

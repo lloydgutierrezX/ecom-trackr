@@ -3,7 +3,7 @@ import { BrandComponent } from '../../../shared/components/brand/brand.component
 import { IAuthAction, IRegisterAuthForm } from '../../../core/services/auth/auth-api.model';
 import { AuthApiService } from '../../../core/services/auth/auth-api.service';
 import { catchError, finalize, tap } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthLayoutComponent } from "../auth-layout.component";
 import { DynamicFormComponent } from '../../../shared/components/forms/dynamic-form.component';
 import { NgTemplateOutlet } from '@angular/common';
@@ -52,10 +52,22 @@ export class LoginComponent implements OnInit {
   constructor(
     private authApiSrvc: AuthApiService,
     private modalSrvc: ModalService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) { }
 
+  private redirectToReturnUrl() {
+    const returnUrl = this.activatedRoute.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
+    this.router.navigateByUrl(returnUrl);
+  }
+
   ngOnInit() {
+
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      this.redirectToReturnUrl();
+    }
+
     this.authApiSrvc.forgotPasswordResult$.subscribe(result => {
       if (!result) {
         return;
@@ -82,8 +94,12 @@ export class LoginComponent implements OnInit {
     this.authApiSrvc.loginAuth(authFormData)
       .pipe(
         tap(response => {
-          console.log('Login successful:', response);
-          // Handle successful login, e.g., redirect or show a success message
+          console.log('Login successful:', response); console.log('Login response:', response);
+
+          localStorage.setItem('accessToken', response.accessToken);
+          localStorage.setItem('user', JSON.stringify(response.user));
+          this.redirectToReturnUrl();
+
         }),
         catchError(error => {
           console.error('Login failed:', error);
@@ -93,9 +109,7 @@ export class LoginComponent implements OnInit {
         finalize(() => {
           this.isDisabled = false;
         })
-      ).subscribe(response => {
-        console.log('Login response:', response);
-      });
+      ).subscribe();
   }
 
   redirect(path: IAuthAction): void {

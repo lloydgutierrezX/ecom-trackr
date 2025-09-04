@@ -3,10 +3,14 @@ import { MenuComponent } from '../menu/menu.component';
 import { MENU_ITEMS } from '../menu/menu';
 import { IMenu } from '../../interfaces/menu.interface';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+import { filter, of, Subscription } from 'rxjs';
 import { UserProfileComponent } from "../user-profile/user-profile.component";
 import { IconsComponent } from '../icons/icons.component';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth/auth.service';
+import { AuthApiService } from '../../../core/services/auth/auth-api.service';
+import { ModalService } from '../../services/modal/modal.service';
+import { ToastService } from '../../services/toast/toast.service';
 @Component({
   selector: 'app-drawer',
   standalone: true,
@@ -23,7 +27,16 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
   MENU_ITEMS_LIST: IMenu[] = MENU_ITEMS;
   private routerSub!: Subscription;
 
-  constructor(private router: Router, private el: ElementRef) { }
+  isLoading = false;
+
+  constructor(
+    private router: Router,
+    private el: ElementRef,
+    private authSrvc: AuthService,
+    private authApiSrvc: AuthApiService,
+    private modalSrvc: ModalService,
+    private toastSrvc: ToastService
+  ) { }
 
   ngAfterViewInit(): void {
     this.syncDrawerState();
@@ -48,8 +61,6 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
   }
 
   checkScreen(): boolean {
-    console.log(window.innerWidth);
-    console.log(this.smallScreen);
     return window.innerWidth < 1024;
   }
 
@@ -68,6 +79,17 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
   }
 
   signOut() {
-    console.log('log me out!');
+
+    if (this.isLoading) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.modalSrvc.open('confirm-modal',
+      {
+        type: 'sign out',
+        handler: () => this.authApiSrvc.logoutUser()
+      }
+    );
   }
 }

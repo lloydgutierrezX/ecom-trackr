@@ -39,11 +39,12 @@ export interface IAuthRegisterResponse {
 }
 
 export interface IAuthResponse {
-  token: string;
+  message: string;
+  accessToken: string;
   user: {
-    id: number;
-    email: string;
+    id: string;
     name: string;
+    email: string;
   };
 }
 

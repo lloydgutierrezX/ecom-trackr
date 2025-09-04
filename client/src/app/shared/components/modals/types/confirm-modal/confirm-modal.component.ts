@@ -1,9 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BaseModalComponent } from '../../base-modal.component';
 import { ModalService } from '../../../../services/modal/modal.service';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { IFormData } from '../../../../interfaces/form.interface';
 import { FormService } from '../../../../services/form/form.service';
+import { AuthService } from '../../../../services/auth/auth.service';
+import { IConfirmActions, IModalActionEvent } from '../../../../interfaces/modal-action-events.interface';
 
 @Component({
   selector: 'app-confirm-modal',
@@ -13,12 +15,13 @@ import { FormService } from '../../../../services/form/form.service';
 })
 export class ConfirmModalComponent implements OnInit, OnDestroy {
   @Input() modalId: 'confirm-modal' = 'confirm-modal';
+  @Output() confirmedActionEmitter = new EventEmitter<IModalActionEvent>();
 
   destroy$ = new Subject<void>();
 
   formData: IFormData = {};
   action = '';
-  handler!: <T>(payload: T) => Observable<T>;
+  handler!: <T>(payload?: T) => Observable<T>;
 
   isDisabled: boolean = false;
 
@@ -35,7 +38,8 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
 
   constructor(
     private modalSrvc: ModalService,
-    private formSrvc: FormService
+    private formSrvc: FormService,
+    private authSrvc: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -69,11 +73,6 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
     }
 
     this.isDisabled = true;
-
-    this.formSrvc.onDelete(this.formData?.['id'] as string, this.handler)
-      .subscribe(() => {
-        this.modalSrvc.close(this.modalId);
-        this.isDisabled = false;
-      });
+    this.confirmedActionEmitter.emit({ action: this.action as IConfirmActions, id: this.formData?.['id'] as string, handler: this.handler });
   }
 }

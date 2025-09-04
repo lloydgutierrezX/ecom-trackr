@@ -19,5 +19,5 @@
 
 <!-- modals -->
 <app-alert-modal modalId="alert-modal" />
-<app-confirm-modal modalId="confirm-modal" />
+<app-confirm-modal (confirmedActionEmitter)="onConfirmAction($event)" [modalId]="confirmModalId" />
 <app-form-modal modalId="form-modal" />
