@@ -17,6 +17,7 @@ model User {
   isVerified Boolean @default(false)
   verificationToken String?
   verificationTokenExpires DateTime?
+  refreshToken String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

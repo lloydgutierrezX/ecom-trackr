@@ -3,18 +3,44 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth/auth.service';
 
 export const authGuard: CanActivateFn = async (route, state) => {
-  const authService = inject(AuthService);
+  const authSrvc = inject(AuthService);
   const router = inject(Router);
 
-  const token = await authService.getTokenWithRefreshIfNeeded();
+  const token = authSrvc.token;
+  if (!token) {
+    if (!router.url.startsWith('/login')) {
+      return router.createUrlTree(['/login'], {
+        queryParams: { returnUrl: state.url }
+      });
+    }
 
-  if (token) {
+    return false;
+  }
+
+  if (!authSrvc.isTokenExpired(token)) {
     return true;
   }
 
-  authService.logout();
+  try {
+    const newToken = await authSrvc.getTokenWithRefreshIfNeeded();
 
-  return router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url }
-  });
+    if (!newToken) {
+      if (router.url !== '/login') {
+        return router.createUrlTree(['/login'], {
+          queryParams: { returnUrl: state.url }
+        });
+      }
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+    if (router.url !== '/login') {
+      return router.createUrlTree(['/login'], {
+        queryParams: { returnUrl: state.url }
+      });
+    }
+    return false;
+  }
 };

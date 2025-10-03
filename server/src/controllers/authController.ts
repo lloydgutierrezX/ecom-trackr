@@ -11,6 +11,7 @@ import { generateToken } from "../utils/token";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";;
 import { addHours } from "../utils/date";
 import { getClearCookieOptions, getCookieOptions } from "../utils/cookie";
+import { decode } from "punycode";
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET as string;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
@@ -259,6 +260,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     const accessToken = generateAccessToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
 
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken }
+    });
+
     res.cookie("refreshToken", refreshToken, getCookieOptions(req));
 
     logger.info("User authenticated successfully, generating token...");
@@ -291,24 +297,30 @@ export const refreshAccessToken = async (req: Request, res: Response): Promise<v
       return;
     }
 
-    jwt.verify(refreshToken, REFRESH_SECRET, (err: any, decoded: any) => {
-      if (err) {
+    let decoded: any;
 
-        if (err.name === "TokenExpiredError") {
-          logger.error("Token expired");
-          res.status(401).json({ message: "Token expired", code: "TOKEN_EXPIRED" });
-          return;
-        }
-
-        logger.error("Invalid refresh token");
-        res.status(403).json({ message: "Invalid refresh token" });
+    try {
+      decoded = jwt.verify(refreshToken, REFRESH_SECRET);
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        logger.error("Token expired");
+        res.status(401).json({ message: "Token expired", code: "TOKEN_EXPIRED" });
         return;
       }
+      res.status(403).json({ message: "Invalid refresh token" });
+      return;
+    }
 
-      const accessToken = generateAccessToken(decoded.userId);
-      logger.info('accessToken: ' + accessToken);
-      res.status(200).json({ accessToken });
-    });
+    const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+    if (!user || user.refreshToken !== refreshToken) {
+      logger.error("Invalid refresh token");
+      res.status(403).json({ message: "Invalid refresh token" });
+      return;
+    }
+
+    const accessToken = generateAccessToken(user.id);
+    res.status(200).json({ accessToken });
+    return;
   } catch (error) {
     logger.error(`Error refreshing token: ${JSON.stringify(error)}`);
     res.status(500).json({ message: "Internal server error" });
@@ -321,7 +333,30 @@ export const logoutUser = async (req: Request, res: Response): Promise<void> => 
   logger.traceIn("Logout User");
 
   try {
-    console.log(getClearCookieOptions(req))
+
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      res.status(400).json({ message: "No refresh token provided" });
+      return;
+    }
+
+    let decoded: any;
+    try {
+      decoded = jwt.verify(refreshToken, REFRESH_SECRET);
+    } catch (error) {
+      res.clearCookie("refreshToken", getCookieOptions(req));
+      res.status(200).json({ message: "Logged out successfully" });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+    if (user && user.refreshToken === refreshToken) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { refreshToken: null }
+      });
+    }
+
     res.clearCookie("refreshToken", getClearCookieOptions(req));
     res.status(200).json({ message: "Logged out successfully" });
     return;
@@ -329,5 +364,7 @@ export const logoutUser = async (req: Request, res: Response): Promise<void> => 
     logger.error(`Error logging out user: ${JSON.stringify(error)}`);
     res.status(500).json({ message: "Internal server error" });
     return;
+  } finally {
+    logger.traceOut("Logout User");
   }
 }

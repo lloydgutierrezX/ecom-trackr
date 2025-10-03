@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClientService } from '../../../shared/services/http-service/http-client.service';
 import { IAuthRegisterResponse, IAuthResponse, ILoginAuthForm, IRegisterAuthForm, IVerifyEmail, IVerifyEmailResponse, IForgotPasswordResponse } from './auth-api.model';
-import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, tap, throwError } from 'rxjs';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthApiService {
@@ -9,7 +10,10 @@ export class AuthApiService {
   private forgotPasswordResultSubject = new BehaviorSubject<IForgotPasswordResponse | null>(null);
   forgotPasswordResult$ = this.forgotPasswordResultSubject.asObservable();
 
-  constructor(private httpSrvc: HttpClientService) { }
+  constructor(
+    private httpSrvc: HttpClientService,
+    private toastSrvc: ToastService
+  ) { }
 
   loginAuth(payload: ILoginAuthForm) {
     const endpoint = 'api/auth/login';
@@ -48,6 +52,12 @@ export class AuthApiService {
   }
 
   logoutUser() {
-    return this.httpSrvc.post<{ message: string }>('api/auth/logout')
+    return this.httpSrvc.post<{ message: string }>('api/auth/logout', {}, { withCredentials: true }).pipe(
+      catchError((error) => {
+        console.error('Logout error:', error);
+        this.toastSrvc.error('Logout failed. Please try again.');
+        return throwError(() => error);
+      })
+    );
   }
 }

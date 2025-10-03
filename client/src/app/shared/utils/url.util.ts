@@ -12,8 +12,6 @@ export const dedupeReturnUrl = (
     returnUrl = split[0].startsWith('/login') ? split[1] : returnUrl;
   }
 
-  console.log(path, returnUrl)
-
   return router.createUrlTree([path], {
     queryParams: { returnUrl }
   });

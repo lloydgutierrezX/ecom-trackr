@@ -1,23 +1,21 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild, OnChanges, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild, OnChanges, HostListener, OnInit } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { MENU_ITEMS } from '../menu/menu';
 import { IMenu } from '../../interfaces/menu.interface';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, of, Subscription } from 'rxjs';
+import { catchError, filter, finalize, Subscription, tap } from 'rxjs';
 import { UserProfileComponent } from "../user-profile/user-profile.component";
 import { IconsComponent } from '../icons/icons.component';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth/auth.service';
 import { AuthApiService } from '../../../core/services/auth/auth-api.service';
 import { ModalService } from '../../services/modal/modal.service';
-import { ToastService } from '../../services/toast/toast.service';
 @Component({
   selector: 'app-drawer',
   standalone: true,
   imports: [CommonModule, MenuComponent, UserProfileComponent, IconsComponent],
   templateUrl: './drawer.component.html'
 })
-export class DrawerComponent implements AfterViewInit, OnChanges {
+export class DrawerComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() open = false;
   @Output() drawerStateChanged = new EventEmitter<boolean>();
 
@@ -31,12 +29,17 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
 
   constructor(
     private router: Router,
-    private el: ElementRef,
-    private authSrvc: AuthService,
     private authApiSrvc: AuthApiService,
     private modalSrvc: ModalService,
-    private toastSrvc: ToastService
   ) { }
+
+  ngOnInit(): void {
+    this.modalSrvc.onClose$.subscribe(id => {
+      if (id === 'confirm-modal') {
+        this.isLoading = false;
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     this.syncDrawerState();
@@ -79,7 +82,6 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
   }
 
   signOut() {
-
     if (this.isLoading) {
       return;
     }
@@ -87,7 +89,7 @@ export class DrawerComponent implements AfterViewInit, OnChanges {
     this.isLoading = true;
     this.modalSrvc.open('confirm-modal',
       {
-        type: 'sign out',
+        type: 'logout',
         handler: () => this.authApiSrvc.logoutUser()
       }
     );

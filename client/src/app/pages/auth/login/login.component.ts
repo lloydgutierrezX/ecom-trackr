@@ -94,8 +94,6 @@ export class LoginComponent implements OnInit {
     this.authApiSrvc.loginAuth(authFormData)
       .pipe(
         tap(response => {
-          console.log('Login successful:', response); console.log('Login response:', response);
-
           localStorage.setItem('accessToken', response.accessToken);
           localStorage.setItem('user', JSON.stringify(response.user));
           this.redirectToReturnUrl();

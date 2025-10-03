@@ -84,7 +84,7 @@ export class ResetPasswordComponent {
           this.successMessage = 'Your password has been reset successfully. You can now log in with your new password.';
         }),
         catchError(error => {
-          console.log('Reset password failed: ', error);
+          console.error('Reset password failed: ', error);
           this.errorMessage = `Reset password failed. ${error.error.message}`;
           this.isDisabled = false
           return [];

@@ -13,6 +13,7 @@ import { VerifyComponent } from './pages/auth/verify/verify.component';
 
 import { tokenGuard } from './guards/token/token.guard';
 import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
+import { unAuthGuard } from './guards/unauth/unauth.guard';
 
 export const routes: Routes = [
   {
@@ -53,10 +54,12 @@ export const routes: Routes = [
   },
   {
     path: 'login',
+    canActivate: [unAuthGuard],
     component: LoginComponent
   },
   {
     path: 'register',
+    canActivate: [unAuthGuard],
     component: RegisterComponent
   },
   {
